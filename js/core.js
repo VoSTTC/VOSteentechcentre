@@ -70,9 +70,9 @@ window.TTC = (function () {
     if (stored && (stored.dataVersion || 1) < (window.TTC_DATA_VERSION || 1)) {
       // newer schedule shipped with the app: replace content, keep real sign-ins on this device
       const keep = (stored.attendance || []).filter(a => !a.sample);
-      data = seed(); data.attendance = keep;
+      data = seed(); data.attendance = keep; data.equipment = stored.equipment || [];
     } else data = stored || seed();
-    ["events", "activities", "announcements", "attendance"].forEach(k => { if (!Array.isArray(data[k])) data[k] = []; });
+    ["events", "activities", "announcements", "attendance", "equipment"].forEach(k => { if (!Array.isArray(data[k])) data[k] = []; });
     purgeAttendance();
     save(true);
   }
@@ -84,6 +84,7 @@ window.TTC = (function () {
   function purgeAttendance() {
     const cutoff = addDays(now().date, -C.attendanceRetentionDays);
     data.attendance = data.attendance.filter(a => a.date >= cutoff);
+    data.equipment = (data.equipment || []).filter(a => a.date >= cutoff);
   }
   window.addEventListener("storage", e => {
     if (e.key === KEY) { data = readRaw() || data; document.dispatchEvent(new CustomEvent("ttc:change")); }
@@ -104,10 +105,10 @@ window.TTC = (function () {
     remove(k, id) { data[k] = data[k].filter(x => x.id !== id); save(); },
     replaceAll(obj) {
       data = Object.assign({ version: 1 }, obj);
-      ["events", "activities", "announcements", "attendance"].forEach(k => { if (!Array.isArray(data[k])) data[k] = []; });
+      ["events", "activities", "announcements", "attendance", "equipment"].forEach(k => { if (!Array.isArray(data[k])) data[k] = []; });
       save();
     },
-    resetToSample() { const keep = data.attendance.filter(a => !a.sample); data = seed(); data.attendance = keep; save(); },
+    resetToSample() { const keep = data.attendance.filter(a => !a.sample), eq = data.equipment; data = seed(); data.attendance = keep; data.equipment = eq; save(); },
     clearSample() {
       data.events = data.events.filter(e => e.status !== "sample");
       data.announcements = data.announcements.filter(a => a.status !== "sample");
@@ -236,6 +237,10 @@ window.TTC = (function () {
     star: '<path d="M12 3.5l2.6 5.3 5.9.9-4.3 4.1 1 5.8-5.2-2.7-5.2 2.7 1-5.8-4.3-4.1 5.9-.9z"/>',
     clock: '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
     pin: '<path d="M12 21s7-6.2 7-11.5A7 7 0 0 0 5 9.5C5 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+    mic: '<rect x="9" y="3" width="6" height="11" rx="3"/><path d="M5.5 11a6.5 6.5 0 0 0 13 0M12 17.5V21M8.5 21h7"/>',
+    camera: '<path d="M4 8h3l2-3h6l2 3h3v11H4z"/><circle cx="12" cy="13" r="3.5"/>',
+    cube: '<path d="M12 3l8 4.5v9L12 21l-8-4.5v-9z"/><path d="M4 7.5l8 4.5 8-4.5M12 12v9"/>',
+    laser: '<path d="M12 3v7"/><path d="M8 3h8"/><path d="M12 10l-1.5 4h3z"/><path d="M4 20h16"/><path d="M7 17l2-2M17 17l-2-2M12 17v-1"/>',
     users: '<circle cx="9" cy="8" r="3.5"/><path d="M3 20a6 6 0 0 1 12 0"/><path d="M16 4.5a3.5 3.5 0 0 1 0 7M21 20a6 6 0 0 0-4-5.6"/>',
     plus: '<path d="M12 5v14M5 12h14"/>',
     edit: '<path d="M4 20h4L19 9l-4-4L4 16z"/><path d="M13.5 6.5l4 4"/>',
@@ -417,6 +422,22 @@ window.TTC = (function () {
     const s = C.statuses[status]; if (!s) return "";
     return `<span class="schip s-${status}" title="${esc(s.hint)}">${esc(s.label)}</span>`;
   }
+  function signupUrl() {
+    const u = String((C.signup && C.signup.formUrl) || "").trim();
+    return /^https:\/\/[^\s"'<>]+$/.test(u) ? u : "";
+  }
+  // draws a QR code into `el` (qrcodejs from cdnjs); falls back to nothing if it did not load
+  function drawQR(el, text, size) {
+    if (!el || !text) return false;
+    try {
+      if (typeof window.QRCode !== "function") return false;
+      el.innerHTML = "";
+      new window.QRCode(el, { text, width: size, height: size, colorDark: "#003248", colorLight: "#ffffff", correctLevel: window.QRCode.CorrectLevel.M });
+      const img = el.querySelector("img"); if (img) img.alt = "";
+      const cv = el.querySelector("canvas"); if (cv) cv.setAttribute("aria-hidden", "true");
+      return true;
+    } catch (e) { return false; }
+  }
   const staffPill = () => `<span class="staff-pill">${icon("lock")}<span>Staff only</span></span>`;
 
   load();
@@ -426,6 +447,6 @@ window.TTC = (function () {
     deviceTZ, tzOffsetsDiffer, db, occursOn, occurrences, describeRepeat, conflictsFor, conflictKeys, conflictPairs,
     timesOverlap, locationsClash, zone, location, activity, isStaff, unlockStaff, lockStaff, staffUntil,
     icon, arrows, toast, modal, closeModal, confirmDialog, exportFile, printPage, toCSV, toICS, embedded,
-    typeChip, statusChip, staffPill, views: {}
+    typeChip, statusChip, staffPill, signupUrl, drawQR, views: {}
   };
 })();

@@ -146,16 +146,85 @@
         </section>
         <section class="d-right" aria-label="Announcements" aria-live="polite" id="dSlides"></section>
       </div>
-      <div class="d-foot">
-        <span>${icon("checkin")}Sign in at the front tablet when you arrive${head !== null ? ` · ${head} youth here now` : ""}</span>
-        <span>${esc(C.tagline)}</span>
-      </div>
+      ${tickerHTML(head)}
       <div class="brand-band" aria-hidden="true"><i></i><i></i></div>
       <div class="d-ctl" id="dCtl">
         <a class="btn sm" href="#home">${icon("left")}<span>Exit display</span></a>
         <button class="btn sm" type="button" id="dFull">${icon("expand")}<span>Full screen</span></button>
       </div>`;
   }
+  /* ---------------- news ticker ---------------- */
+  const DAY3 = T.DAY_SHORT;
+  function dayList(days) {
+    const d = days.slice().sort((a, b) => a - b); const parts = []; let i = 0;
+    while (i < d.length) { let j = i; while (j + 1 < d.length && d[j + 1] === d[j] + 1) j++; parts.push(j - i >= 2 ? `${DAY3[d[i]]} to ${DAY3[d[j]]}` : d.slice(i, j + 1).map(x => DAY3[x]).join(" and ")); i = j + 1; }
+    return parts.join(", ");
+  }
+  function hoursLine(t) {
+    const series = T.db.list("events").filter(e => e.type === "dropin" && e.location === "centre" && e.repeat && (!e.repeat.until || e.repeat.until >= t.date));
+    if (!series.length) return "";
+    const byTime = {}; series.forEach(e => { const k = e.start + "-" + e.end; (byTime[k] = byTime[k] || []).push(...e.repeat.days); });
+    const open = new Set(series.flatMap(e => e.repeat.days));
+    const closed = [0, 1, 2, 3, 4, 5, 6].filter(d => !open.has(d));
+    const parts = Object.entries(byTime).map(([k, days]) => { const [a, b] = k.split("-"); return `${dayList([...new Set(days)])} ${T.fmtTime(a).replace(" PM", "").replace(" AM", "")} to ${T.fmtTime(b)}`; });
+    return `Drop-in hours: ${parts.join(" · ")}` + (closed.length ? ` · Closed ${dayList(closed)}` : "");
+  }
+  function tickerItems() {
+    const t = T.now(), items = [];
+    items.push({ k: "welcome", tx: `Welcome to the ${C.centre} at ${C.org}` });
+    const h = hoursLine(t); if (h) items.push({ k: "hours", tx: h });
+    const today = T.occurrences(t.date, t.date).filter(o => o.ev.type !== "staff" && !(o.ev.type === "dropin" && o.ev.location === "centre") && T.mins(o.ev.end) > t.minutes);
+    today.slice(0, 3).forEach(o => items.push({ k: "today", tx: `Today: ${o.ev.title}, ${T.fmtRange(o.ev.start, o.ev.end)}` }));
+    const ws = T.weekStart(t.date);
+    const lul = T.occurrences(ws, T.addDays(ws, 6)).filter(o => o.ev.type === "workshop" && /level up lab/i.test(o.ev.title) && o.date >= t.date);
+    if (lul.length) {
+      const topic = lul[0].ev.title.replace(/^level up lab:\s*/i, "");
+      const days = [...new Set(lul.filter(o => o.ev.title === lul[0].ev.title).map(o => T.DAY_NAMES[T.dow(o.date)]))].join(" and ");
+      items.push({ k: "lul", tx: `Level Up Lab this week: ${topic}, ${days} at ${T.fmtTime(lul[0].ev.start)}` });
+    }
+    forDisplay().forEach(a => items.push({ k: a.kind, tx: a.title }));
+    if (T.signupUrl()) items.push({ k: "signup", tx: "New here? Scan the code to sign up" });
+    items.push({ k: "signin", tx: "Sign in when you arrive" });
+    if ((C.equipment || []).length) items.push({ k: "equip", tx: `Using the ${C.equipment.map(s => s.name.replace(/^[A-Z](?=[a-z])/, c => c.toLowerCase())).join(", ").replace(/, ([^,]*)$/, " or $1")}? Sign in on the equipment sheet` });
+    (C.display.ticker && C.display.ticker.extra || []).forEach(x => x && items.push({ k: "extra", tx: x }));
+    items.push({ k: "tag", tx: C.tagline });
+    return items;
+  }
+  const TICON = { welcome: "home", hours: "clock", today: "calendar", lul: "spark", announcement: "megaphone", reminder: "clock", shoutout: "star", signup: "plus", signin: "checkin", equip: "cube", extra: "info", tag: "arrow" };
+  let tickKey = "", tickStart = 0, tickDur = 0, tickRot = null;
+  function tickerHTML(head) {
+    const tk = C.display.ticker || {};
+    const qr = T.signupUrl() ? `<span class="d-su"><span class="qr" id="dQR" aria-hidden="true"></span><span>Scan to<br>sign up</span></span>` : "";
+    if (tk.on === false) return `<div class="d-foot"><span>${icon("checkin")}Sign in when you arrive${head !== null ? ` · ${head} youth here now` : ""}</span>${qr}<span>${esc(C.tagline)}</span></div>`;
+    const items = tickerItems();
+    if (head !== null) items.splice(1, 0, { k: "signin", tx: `${head} youth in the centre right now` });
+    const run = items.map(i => `<span class="tk-item tk-${i.k}">${icon(TICON[i.k] || "info")}${esc(i.tx)}</span>`).join(`<span class="tk-sep" aria-hidden="true"></span>`);
+    return `<div class="d-ticker">
+      <span class="tk-tag">${T.arrows("sm")}<span>TTC Updates</span></span>
+      <div class="tk-win"><div class="tk-run" data-key="${esc(items.map(i => i.tx).join("|"))}"><div class="tk-set">${run}<span class="tk-sep" aria-hidden="true"></span></div><div class="tk-set" aria-hidden="true">${run}<span class="tk-sep"></span></div></div></div>
+      ${qr}
+      <ul class="sr-only">${items.map(i => `<li>${esc(i.tx)}</li>`).join("")}</ul>
+    </div>`;
+  }
+  // keep the crawl moving smoothly across re-renders (the display repaints every 30 s)
+  function startTicker() {
+    const runEl = dispEl && dispEl.querySelector(".tk-run"); if (!runEl) return;
+    const set = runEl.querySelector(".tk-set");
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const key = runEl.dataset.key, w = set.scrollWidth;
+    const speed = (C.display.ticker && C.display.ticker.speed) || 110;
+    if (key !== tickKey || !tickDur) { tickKey = key; tickStart = Date.now(); tickDur = Math.max(20, w / speed); }
+    if (reduce) { // no crawl: show one update at a time instead
+      runEl.classList.add("static");
+      const items = [...set.querySelectorAll(".tk-item")]; let i = 0;
+      const show = () => items.forEach((x, j) => { x.hidden = j !== i; });
+      show(); clearInterval(tickRot); tickRot = setInterval(() => { i = (i + 1) % items.length; show(); }, 6000);
+      return;
+    }
+    runEl.style.animationDuration = tickDur + "s";
+    runEl.style.animationDelay = -(((Date.now() - tickStart) / 1000) % tickDur) + "s";
+  }
+
   function paintSlide() {
     const box = dispEl && dispEl.querySelector("#dSlides"); if (!box) return;
     const list = forDisplay();
@@ -172,6 +241,9 @@
     if (!dispEl) return;
     dispEl.innerHTML = `<div class="display" id="displayRoot" tabindex="-1">${displayHTML()}</div>`;
     paintSlide();
+    startTicker();
+    const dq = dispEl.querySelector("#dQR");
+    if (dq && !T.drawQR(dq, T.signupUrl(), Math.round(window.innerHeight * 0.085))) dq.parentNode.hidden = true;
     const full = dispEl.querySelector("#dFull");
     full.onclick = () => {
       const r = document.documentElement;
@@ -209,7 +281,7 @@
     refresh() { const keep = slideIdx; paintDisplay(); slideIdx = keep; paintSlide(); },
     tick() { this.refresh(); },
     cleanup() {
-      clearInterval(slideTimer); clearTimeout(idleTimer);
+      clearInterval(slideTimer); clearTimeout(idleTimer); clearInterval(tickRot);
       document.removeEventListener("keydown", onKey);
       document.removeEventListener("mousemove", wakeIdle);
       document.removeEventListener("focusin", wakeIdle);

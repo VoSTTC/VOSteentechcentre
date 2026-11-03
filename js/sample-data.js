@@ -12,7 +12,7 @@
 
    Program descriptions in `activities` are working drafts for staff to edit.
    ========================================================================= */
-window.TTC_DATA_VERSION = 2;
+window.TTC_DATA_VERSION = 3;
 
 window.TTC_SAMPLE = function () {
   const OPEN = "2027-01-05"; // first day of drop-in (Tuesday)
@@ -55,6 +55,12 @@ window.TTC_SAMPLE = function () {
       equipment: "Recording and production gear in the music studio. See the equipment inventory.",
       supervision: "Studio door stays visible to staff. Headphone volume checks for new users.",
       spark: ["Recreate Video Game Music", "Junkstruments", "Make A Music Video"] },
+    { id: "photo", zone: "digital", name: "Photo Studio", location: "photo",
+      description: "Shoot portraits, product photos or video with studio lighting and a backdrop.",
+      capacity: "", signup: "Sign in on the Photo studio equipment sheet.",
+      equipment: "Cameras, lighting and backdrop in the photo studio. See the equipment inventory.",
+      supervision: "Ask before photographing anyone. Media consent applies. Gear is signed out through staff.",
+      spark: ["Initial Photography", "Light Painting Photography", "Disguise Yourself"] },
     { id: "vr", zone: "xr", name: "VR Exploration", location: "xr",
       description: "Try virtual and mixed reality experiences during drop-in, then talk about what you would build.",
       capacity: "", signup: "Ask staff for a headset turn.",
@@ -121,7 +127,7 @@ window.TTC_SAMPLE = function () {
   const announcements = [
     { id: "an-opening", kind: "announcement", title: "Drop-in opens Tuesday, January 5",
       body: "Free drop-in for teens: Tuesday to Friday 2 to 7 PM, Saturday 3 to 7 PM. Closed Sunday and Monday.",
-      start: "2026-11-03", end: "2027-01-05", onDisplay: true, pinned: true, consent: true, status: "confirmed" },
+      start: "2026-11-03", end: "2027-01-04", onDisplay: true, pinned: true, consent: true, status: "confirmed" },
     { id: "an-lul", kind: "reminder", title: "Level Up Lab: Tuesdays and Saturdays, 4 to 5 PM",
       body: "A new skill to try each week: 3D printing, laser engraving, video editing and digital illustration. No experience needed, and drop-in stays open.",
       start: "2026-11-03", end: "", onDisplay: true, pinned: false, consent: true, status: "confirmed" },

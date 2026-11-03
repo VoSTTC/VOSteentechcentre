@@ -68,6 +68,7 @@
           <p class="muted">Schedule entries marked Sample or To confirm. Confirm them in the Schedule tab before sharing the schedule.</p>
           <button class="btn sm" type="button" data-go="schedule">Review entries</button></section>
         <section class="panel ov"><h2>${icon("users")}Signed in now</h2><p class="ov-n">${here}</p>
+          <p class="muted">${T.db.list("equipment").filter(r => r.date === t.date && !r.timeOut).length} equipment session(s) open.</p>
           <button class="btn sm" type="button" data-go="attendance">Open attendance</button></section>
         <section class="panel ov ${sample ? "warn" : "ok"}"><h2>${icon("info")}Sample content</h2><p class="ov-n">${sample}</p>
           <p class="muted">${sample ? "Example items are still in the app. Remove them once real content is in." : "All sample content has been removed."}</p>
@@ -166,6 +167,9 @@
     attDate = attDate || today;
     const rows = T.db.list("attendance").filter(a => a.date === attDate).sort((a, b) => a.timeIn.localeCompare(b.timeIn));
     const open = rows.filter(r => !r.timeOut);
+    const eqRows = T.db.list("equipment").filter(a => a.date === attDate).sort((a, b) => a.timeIn.localeCompare(b.timeIn));
+    const eqOpen = eqRows.filter(r => !r.timeOut);
+    const stationOf = id => (T.equipmentStations ? T.equipmentStations() : []).find(s => s.id === id);
     const byAct = {}; rows.forEach(r => { byAct[r.activity] = (byAct[r.activity] || 0) + 1; });
     const actName = id => (T.activity(id) || { name: "Other" }).name;
     p.innerHTML = `
@@ -175,7 +179,7 @@
         <button class="btn" id="attCsv" type="button">${icon("download")}<span>This day (.csv)</span></button>
         <button class="btn" id="attAll" type="button">${icon("download")}<span>Last ${C.attendanceRetentionDays} days (.csv)</span></button>
         <button class="btn" id="attPrint" type="button">${icon("print")}<span>Print</span></button>
-        ${open.length && attDate === today ? `<button class="btn" id="attEnd" type="button">${icon("signout")}<span>Sign out everyone still here</span></button>` : ""}
+        ${(open.length || eqOpen.length) && attDate === today ? `<button class="btn" id="attEnd" type="button">${icon("signout")}<span>Sign out everyone still here</span></button>` : ""}
       </div>
       <div class="att-sum">
         <div><span class="ov-n">${rows.length}</span><span>sign-ins</span></div>
@@ -187,18 +191,44 @@
         <tbody>${rows.map(r => `<tr><th scope="row">${esc(r.name)}${r.sample ? ` <span class="schip s-sample">Sample</span>` : ""}</th><td>${esc(actName(r.activity))}</td><td>${T.fmtTime(r.timeIn)}</td><td>${r.timeOut ? T.fmtTime(r.timeOut) : `<span class="here">Here now</span>`}</td>
           <td class="acts">${!r.timeOut ? `<button class="btn sm" type="button" data-out="${r.id}" aria-label="Sign out ${esc(r.name)}">${icon("signout")}<span>Sign out</span></button>` : ""}
           <button class="btn sm danger ghost" type="button" data-rm="${r.id}" aria-label="Delete sign-in for ${esc(r.name)}">${icon("trash")}</button></td></tr>`).join("")}</tbody></table></div>`
-      : `<p class="empty">No sign-ins on ${esc(T.fmtDate(attDate, "short"))}. Youth sign in from the <a href="#signin">sign-in page</a>.</p>`}`;
+      : `<p class="empty">No sign-ins on ${esc(T.fmtDate(attDate, "short"))}. Youth sign in from the <a href="#signin">sign-in page</a>.</p>`}
+      <section class="eq-staff" aria-labelledby="eqh">
+        <h2 id="eqh">${icon("cube")}Equipment use</h2>
+        <div class="tool-row">
+          <button class="btn" id="eqCsv" type="button">${icon("download")}<span>This day (.csv)</span></button>
+          <button class="btn" id="eqAll" type="button">${icon("download")}<span>Last ${C.attendanceRetentionDays} days (.csv)</span></button>
+        </div>
+        <div class="att-sum">${(T.equipmentStations ? T.equipmentStations() : []).map(st => { const n = eqRows.filter(r => r.station === st.id).length; const o = eqRows.filter(r => r.station === st.id && !r.timeOut).length; return `<div><span class="ov-n sm">${n}</span><span>${esc(st.name)}${o ? ` · ${o} in use` : ""}</span></div>`; }).join("")}</div>
+        ${eqRows.some(r => !r.onboarded) ? `<p class="callout warn">${icon("alert")}<span>${eqRows.filter(r => !r.onboarded).length} equipment sign-in${eqRows.filter(r => !r.onboarded).length === 1 ? "" : "s"} said onboarding was not done yet. Check in with them.</span></p>` : ""}
+        ${eqRows.length ? `<div class="table-wrap"><table class="tbl"><caption class="sr-only">Equipment use for ${esc(T.fmtDate(attDate))}</caption>
+          <thead><tr><th scope="col">Name</th><th scope="col">Equipment</th><th scope="col">Details</th><th scope="col">Onboarded</th><th scope="col">In</th><th scope="col">Out</th><th scope="col"><span class="sr-only">Actions</span></th></tr></thead>
+          <tbody>${eqRows.map(r => { const st = stationOf(r.station); return `<tr><th scope="row">${esc(r.name)}</th><td>${esc(st ? st.name : r.station)}${r.unit ? `<span class="sub">${esc(r.unit)}</span>` : ""}</td><td>${esc(T.equipmentAnswerText(st, r))}</td>
+            <td>${r.onboarded ? "Yes" : `<span class="warn-txt">${icon("alert")}Not yet</span>`}</td><td>${T.fmtTime(r.timeIn)}</td><td>${r.timeOut ? T.fmtTime(r.timeOut) : `<span class="here">In use</span>`}</td>
+            <td class="acts">${!r.timeOut ? `<button class="btn sm" type="button" data-eqout="${r.id}" aria-label="End ${esc(r.name)}'s session">${icon("signout")}<span>End</span></button>` : ""}
+            <button class="btn sm danger ghost" type="button" data-eqrm="${r.id}" aria-label="Delete equipment sign-in for ${esc(r.name)}">${icon("trash")}</button></td></tr>`; }).join("")}</tbody></table></div>`
+          : `<p class="empty">No equipment sign-ins on ${esc(T.fmtDate(attDate, "short"))}. Youth sign in on the <a href="#equipment">equipment sheet</a>.</p>`}
+      </section>`;
     p.querySelector("#attDate").onchange = e => { attDate = e.target.value || today; render(root); root.querySelector("#attDate").focus(); };
     const header = ["Date", "Name", "Activity", "Time in", "Time out"];
     p.querySelector("#attCsv").onclick = () => T.exportFile(`ttc-attendance-${attDate}.csv`, T.toCSV([header, ...rows.map(r => [r.date, r.name, actName(r.activity), r.timeIn, r.timeOut])]), "text/csv");
     p.querySelector("#attAll").onclick = () => T.exportFile(`ttc-attendance-last-${C.attendanceRetentionDays}-days.csv`, T.toCSV([header, ...T.db.list("attendance").slice().sort((a, b) => (a.date + a.timeIn).localeCompare(b.date + b.timeIn)).map(r => [r.date, r.name, actName(r.activity), r.timeIn, r.timeOut])]), "text/csv");
     p.querySelector("#attPrint").onclick = T.printPage;
     const end = p.querySelector("#attEnd"); if (end) end.onclick = async () => {
-      if (await T.confirmDialog(`Sign out all ${open.length} youth still signed in, at the current time?`, { title: "End of day", confirmLabel: "Sign everyone out" })) {
-        const hm = T.now().hm; open.forEach(r => { r.timeOut = hm; }); T.db.upsert("attendance", open[0]); T.toast("Everyone signed out.");
+      if (await T.confirmDialog(`Sign out all ${open.length} youth still signed in and end ${eqOpen.length} open equipment session${eqOpen.length === 1 ? "" : "s"}, at the current time?`, { title: "End of day", confirmLabel: "Sign everyone out" })) {
+        const hm = T.now().hm; open.forEach(r => { r.timeOut = hm; }); eqOpen.forEach(r => { r.timeOut = hm; });
+        if (open.length) T.db.upsert("attendance", open[0]); if (eqOpen.length) T.db.upsert("equipment", eqOpen[0]); T.toast("Everyone signed out.");
       }
     };
     p.querySelectorAll("[data-out]").forEach(b => b.onclick = () => { const r = T.db.find("attendance", b.dataset.out); r.timeOut = T.now().hm; T.db.upsert("attendance", r); T.toast(`${r.name} signed out.`); });
+    const eqHeader = ["Date", "Name", "Equipment", "Machine", "Onboarded", "Details", "Time in", "Time out"];
+    const eqLine = r => { const st = stationOf(r.station); return [r.date, r.name, st ? st.name : r.station, r.unit || "", r.onboarded ? "Yes" : "Not yet", T.equipmentAnswerText(st, r), r.timeIn, r.timeOut]; };
+    p.querySelector("#eqCsv").onclick = () => T.exportFile(`ttc-equipment-${attDate}.csv`, T.toCSV([eqHeader, ...eqRows.map(eqLine)]), "text/csv");
+    p.querySelector("#eqAll").onclick = () => T.exportFile(`ttc-equipment-last-${C.attendanceRetentionDays}-days.csv`, T.toCSV([eqHeader, ...T.db.list("equipment").slice().sort((a, b) => (a.date + a.timeIn).localeCompare(b.date + b.timeIn)).map(eqLine)]), "text/csv");
+    p.querySelectorAll("[data-eqout]").forEach(b => b.onclick = () => { const r = T.db.find("equipment", b.dataset.eqout); r.timeOut = T.now().hm; T.db.upsert("equipment", r); T.toast(`Ended ${r.name}'s session.`); });
+    p.querySelectorAll("[data-eqrm]").forEach(b => b.onclick = async () => {
+      const r = T.db.find("equipment", b.dataset.eqrm);
+      if (await T.confirmDialog(`Delete the equipment sign-in for ${r.name} at ${T.fmtTime(r.timeIn)}?`, { title: "Delete sign-in", confirmLabel: "Delete", danger: true })) { T.db.remove("equipment", r.id); T.toast("Sign-in deleted."); }
+    });
     p.querySelectorAll("[data-rm]").forEach(b => b.onclick = async () => {
       const r = T.db.find("attendance", b.dataset.rm);
       if (await T.confirmDialog(`Delete the sign-in for ${r.name} at ${T.fmtTime(r.timeIn)}?`, { title: "Delete sign-in", confirmLabel: "Delete", danger: true })) { T.db.remove("attendance", r.id); T.toast("Sign-in deleted."); }
@@ -235,7 +265,7 @@
     const restore = async text => {
       let obj; try { obj = JSON.parse(text); } catch (e) { T.toast("That file is not a valid backup."); return; }
       if (!obj || !Array.isArray(obj.events) || !Array.isArray(obj.activities)) { T.toast("That file is not a TTC Hub backup."); return; }
-      if (await T.confirmDialog(`Replace everything on this device with this backup (${obj.events.length} entries, ${obj.activities.length} activities, ${(obj.announcements || []).length} announcements, ${(obj.attendance || []).length} sign-ins)?`, { title: "Restore backup", confirmLabel: "Replace and restore", danger: true })) {
+      if (await T.confirmDialog(`Replace everything on this device with this backup (${obj.events.length} entries, ${obj.activities.length} activities, ${(obj.announcements || []).length} announcements, ${(obj.attendance || []).length} sign-ins, ${(obj.equipment || []).length} equipment sign-ins)?`, { title: "Restore backup", confirmLabel: "Replace and restore", danger: true })) {
         T.db.replaceAll(obj); T.toast("Backup restored.");
       }
     };
@@ -243,7 +273,7 @@
     p.querySelector("#impGo").onclick = () => restore(p.querySelector("#impTxt").value);
     p.querySelector("#clrS").onclick = clearSample;
     p.querySelector("#rsS").onclick = async () => { if (await T.confirmDialog("Replace the schedule, programs and announcements on this device with the starting schedule that ships with the app? Sign-ins stay. Your own edits will be lost unless you back up first.", { title: "Reset schedule", confirmLabel: "Reset", danger: true })) { T.db.resetToSample(); T.toast("Starting schedule restored."); } };
-    p.querySelector("#wipe").onclick = async () => { if (await T.confirmDialog("Erase every schedule entry, announcement, sign-in and activity on this device? This cannot be undone. Download a backup first if you need one.", { title: "Erase all data", confirmLabel: "Erase everything", danger: true })) { T.db.replaceAll({ events: [], activities: [], announcements: [], attendance: [], hasSample: false }); T.toast("All data erased."); } };
+    p.querySelector("#wipe").onclick = async () => { if (await T.confirmDialog("Erase every schedule entry, announcement, sign-in and activity on this device? This cannot be undone. Download a backup first if you need one.", { title: "Erase all data", confirmLabel: "Erase everything", danger: true })) { T.db.replaceAll({ events: [], activities: [], announcements: [], attendance: [], equipment: [], hasSample: false }); T.toast("All data erased."); } };
   }
 
   T.views.staff = { title: "Staff tools", render };

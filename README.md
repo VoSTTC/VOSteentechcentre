@@ -16,14 +16,16 @@ Plain HTML, CSS and JavaScript. No build step, no server code.
 | `#home` | Landing page with today at a glance and function cards |
 | `#schedule` | Week grid, list and today views; filters; details; add, edit, remove (staff) |
 | `#programs`, `#activity-<id>` | Program areas, activity pages with schedule, capacity, equipment and supervision notes |
-| `#signin` | Youth sign-in and sign-out (first name and last initial) |
+| `#signin` | Youth sign-in and sign-out (first name and last initial), plus a New? Sign up tab that opens the VoS Google Form |
+| `#equipment` | Sign-in sheets for the recording studio, photo studio, 3D printers and laser cutter |
 | `#announcements` | Announcements, reminders and shout-outs |
-| `#display` | Large-text TV display: now, up next, rotating announcements. No names. |
+| `#display` | Large-text TV display: now, up next, rotating announcements and a news ticker. No names. |
 | `#staff` | Staff tools: overview, schedule, programs, announcements, attendance, data and backup |
 
 ## Where to change things
 
-- `js/config.js`: centre name, time zone, grid hours, zones, locations, event types, staff code, attendance retention, display timing.
+- `js/config.js`: centre name, time zone, grid hours, zones, locations, event types, staff code, attendance retention,
+  display timing and ticker lines, the sign-up Google Form link (`signup.formUrl`), and the equipment sheets (`equipment`).
 - `js/sample-data.js`: the starting schedule (weekly hours, Level Up Lab, bookings, partner visits) and announcements.
   After editing it, raise `TTC_DATA_VERSION` by 1 so every device picks up the new schedule on its next load
   (sign-ins on each device are kept; edits made in the app on that device are replaced).
