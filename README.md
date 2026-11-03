@@ -1,1 +1,46 @@
-# VOSteentechcentre
+# Teen Tech Centre Hub (prototype)
+
+Running schedule and operations hub for the Visions of Science Best Buy Teen Tech Centre.
+Plain HTML, CSS and JavaScript. No build step, no server code.
+
+## Run it
+
+- **On one computer:** unzip and open `index.html` in Chrome, Edge or Safari. Or, from this folder, run `python3 -m http.server` and visit `http://localhost:8000`.
+- **Hosted (like the reference site):** upload the folder to GitHub Pages, Netlify or any static host. Downloads and printing work there.
+- **TV:** open the hosted link on the TV browser, go to Display, and select Full screen.
+
+## Pages
+
+| Link | What it does |
+|---|---|
+| `#home` | Landing page with today at a glance and function cards |
+| `#schedule` | Week grid, list and today views; filters; details; add, edit, remove (staff) |
+| `#programs`, `#activity-<id>` | Program areas, activity pages with schedule, capacity, equipment and supervision notes |
+| `#signin` | Youth sign-in and sign-out (first name and last initial) |
+| `#announcements` | Announcements, reminders and shout-outs |
+| `#display` | Large-text TV display: now, up next, rotating announcements. No names. |
+| `#staff` | Staff tools: overview, schedule, programs, announcements, attendance, data and backup |
+
+## Where to change things
+
+- `js/config.js`: centre name, time zone, grid hours, zones, locations, event types, staff code, attendance retention, display timing.
+- `js/sample-data.js`: the sample content loaded the first time the app opens.
+- `css/app.css`: brand colours and layout. Colours follow the Visions Brand Guidelines & Asset Kit.
+- `assets/`: Visions logo and STEM patterns, extracted unchanged from the brand guide.
+
+## Data and limits
+
+- Data is saved in the browser's local storage on each device. It survives refresh and restart.
+- Devices do **not** share data. Use Staff tools > Data & backup to export a backup and import it on another device.
+- Clearing browser data, private windows or another browser start fresh.
+- Nothing is sent to Google Calendar, Salesforce or any other service. The `.ics` and `.csv` exports are files you import yourself.
+- Attendance is removed after 30 days (configurable) and never appears on public pages or the TV display.
+
+## Before real use
+
+1. **Replace the staff gate.** The staff code in `config.js` is visible to anyone and is not security.
+   Real use needs staff accounts on a backend (for example Google Workspace sign-in).
+2. **Shared data needs a backend.** A shared database (for example Firebase, Supabase or a Google Sheets-backed service)
+   is required for the tablet, staff laptops and TV to see the same schedule live.
+3. **Youth data approval.** Get organizational approval before storing youth names on any device or service.
+4. **Replace sample content.** Staff tools > Overview > Clear sample content. Confirm hours against the latest schedule.
