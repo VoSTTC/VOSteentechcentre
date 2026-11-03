@@ -272,7 +272,7 @@
         <h2>${esc(name)}</h2>
         <ol class="su-steps">
           <li>Scan the code with your phone, or select <b>Open the sign-up form</b>.</li>
-          <li>Fill it in. It takes a few minutes. Some questions may need a parent or guardian.</li>
+          <li>Fill it in. It only takes a couple of minutes.</li>
           <li>Come back here and sign in.</li>
         </ol>
         <a class="btn primary big" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${icon("edit")}<span>Open the sign-up form</span></a>
