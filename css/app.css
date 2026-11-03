@@ -654,6 +654,8 @@ body.display-mode main { padding: 0; min-height: 0; }
 @media (max-width: 640px) { .pj-row { grid-template-columns: 72px minmax(0, 1fr); } .pj-row .acts { grid-column: 1 / -1; justify-content: flex-start; } }
 
 .d-su .su-tap { display: none; }
+.tk-short { display: none; }
+.d-coming { display: none; }
 
 /* ---------------- display + showcase on phones (portrait or landscape) ---------------- */
 @media (max-width: 760px), (max-height: 520px) {
@@ -718,4 +720,62 @@ body.display-mode main { padding: 0; min-height: 0; }
   .sh-empty img { height: 40px; }
   .sh-empty h1 { font-size: 1.6rem; }
   .sh-empty p { font-size: 1.05rem; }
+}
+
+/* ---------------- display + showcase on vertical screens (upright iPad, portrait TV or board) ---------------- */
+@media (orientation: portrait) and (min-width: 761px) and (min-height: 521px) {
+  .d-top { display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 2.4vw; padding: 2.4vh 4vw 1.8vh; }
+  .d-logo { height: 5.4vw; }
+  .d-name { font-size: 3.4vw; padding-left: 2.4vw; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .d-name span { font-size: 1.5vw; }
+  .d-time { font-size: 6.2vw; }
+  .d-date { font-size: 2.1vw; }
+  .d-main { display: flex; flex-direction: column; gap: 2.4vh; padding: 2.6vh 4vw; min-height: 0; overflow: hidden; }
+  .d-left { flex: 0 0 auto; gap: 1.2vh; overflow: visible; }
+  .d-h { font-size: 2vw; margin-top: .6vh; }
+  .live-dot { width: 1.8vw; height: 1.8vw; }
+  .d-list { gap: 1.2vh; }
+  .d-ev { padding: 1.4vh 3vw; border-left-width: 1.4vw; border-radius: 1.6vw; }
+  .d-kind { font-size: 1.7vw; }
+  .d-title { font-size: 3.6vw; }
+  .d-ev.big .d-title { font-size: 4.4vw; }
+  .d-meta { font-size: 2.3vw; }
+  .d-closed { font-size: 4.4vw; line-height: 1.15; }
+  .d-none { font-size: 2.4vw; }
+  .d-coming { display: block; margin-top: 1vh; }
+  .d-clist { list-style: none; margin: 1vh 0 0; padding: 0; display: grid; gap: .9vh; }
+  .d-clist li { display: grid; grid-template-columns: 11vw minmax(0, 1fr); gap: 2.4vw; align-items: center; padding: 1vh 0 1vh 2vw; border-left: .9vw solid var(--tc, var(--c-lightblue)); background: rgba(255, 255, 255, .06); border-radius: 0 1vw 1vw 0; }
+  .d-clist .t-workshop { --tc: #f7882a; } .d-clist .t-partner { --tc: #a98bd6; } .d-clist .t-special { --tc: #ffc10d; } .d-clist .t-dropin { --tc: #39cced; }
+  .dc-day { display: flex; flex-direction: column; font-size: 1.9vw; color: var(--c-lightblue); font-weight: 600; line-height: 1.15; }
+  .dc-day b { font-size: 2.6vw; color: #fff; font-weight: 800; }
+  .dc-main { display: flex; flex-direction: column; min-width: 0; }
+  .dc-title { font-size: 2.7vw; font-weight: 800; line-height: 1.15; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .dc-meta { font-size: 1.9vw; color: var(--c-lightblue); font-weight: 600; }
+  .d-right { flex: 1 1 0; min-height: 0; display: flex; }
+  .d-slide { padding: 3vh 4vw 5vh; border-radius: 2.6vw; gap: 1.6vh; }
+  .d-s-kind { font-size: 1.8vw; }
+  .d-s-kind .ico { width: 2.4vw; height: 2.4vw; }
+  .d-s-title { font-size: 6vw; }
+  .d-s-body { font-size: 3vw; }
+  .d-dots { left: 4vw; bottom: 2vh; }
+  .d-dots i { width: 1.4vw; height: 1.4vw; }
+  .d-ticker { min-height: 6vh; }
+  .tk-tag { font-size: 1.9vw; padding: 0 2vw 0 4vw; gap: 1vw; }
+  .tk-long { display: none; }
+  .tk-short { display: inline; }
+  .tk-item { font-size: 2.6vw; gap: 1vw; }
+  .tk-item .ico { width: 2.6vw; height: 2.6vw; }
+  .tk-sep { width: 1vw; height: 1vw; margin: 0 3vw; }
+  .d-ticker .d-su { font-size: 1.7vw; padding: .8vh 4vw .8vh 2vw; gap: 1.4vw; }
+  /* showcase */
+  .sh-count { font-size: 2.4vw; }
+  .sh-main { display: flex; flex-direction: column; gap: 2.6vh; padding: 2.6vh 4vw; }
+  .sh-photo { flex: 1 1 auto; min-height: 30vh; border-radius: 2.6vw; }
+  .sh-text { flex: 0 1 auto; max-height: 36vh; border-left-width: 1.2vw; padding-left: 3vw; gap: 1.4vh; }
+  .sh-zone { font-size: 1.8vw; padding: .5vh 2vw; }
+  .sh-title { font-size: 6vw; }
+  .sh-maker { font-size: 3.4vw; }
+  .sh-cap { font-size: 2.8vw; max-width: none; }
+  .sh-tool { font-size: 2.3vw; }
+  .sh-foot { font-size: 2.2vw; padding: 1.6vh 4vw; flex-wrap: wrap; gap: 1vh 3vw; }
 }

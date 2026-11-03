@@ -143,6 +143,7 @@
             : `<p class="d-closed">${nextOpen ? `Next drop-in: ${esc(T.fmtDate(nextOpen.date, "short"))} at ${T.fmtTime(nextOpen.ev.start)}` : "See you soon"}</p>`}
           <h2 class="d-h">Up next today</h2>
           ${next.length ? `<ul class="d-list">${next.map(o => tile(o)).join("")}</ul>` : `<p class="d-none">Nothing else scheduled today.</p>`}
+          ${comingHTML(t, nowL.length + next.length && window.innerHeight < 1300 ? 0 : 3)}
         </section>
         <section class="d-right" aria-label="Announcements" aria-live="polite" id="dSlides"></section>
       </div>
@@ -200,7 +201,7 @@
     if (head !== null) items.splice(1, 0, { k: "signin", tx: `${head} youth in the centre right now` });
     const run = items.map(i => `<span class="tk-item tk-${i.k}">${icon(TICON[i.k] || "info")}${esc(i.tx)}</span>`).join(`<span class="tk-sep" aria-hidden="true"></span>`);
     return `<div class="d-ticker">
-      <span class="tk-tag">${T.arrows("sm")}<span>TTC Updates</span></span>
+      <span class="tk-tag">${T.arrows("sm")}<span class="tk-long">TTC Updates</span><span class="tk-short">Updates</span></span>
       <div class="tk-win"><div class="tk-run" data-key="${esc(items.map(i => i.tx).join("|"))}"><div class="tk-set">${run}<span class="tk-sep" aria-hidden="true"></span></div><div class="tk-set" aria-hidden="true">${run}<span class="tk-sep"></span></div></div></div>
       ${qr}
       <ul class="sr-only">${items.map(i => `<li>${esc(i.tx)}</li>`).join("")}</ul>
@@ -223,6 +224,17 @@
     }
     runEl.style.animationDuration = tickDur + "s";
     runEl.style.animationDelay = -(((Date.now() - tickStart) / 1000) % tickDur) + "s";
+  }
+
+  // "Coming up" list, shown on vertical screens where there is room for it
+  function comingHTML(t, max) {
+    if (!max) return "";
+    const list = T.occurrences(T.addDays(t.date, 1), T.addDays(t.date, 21))
+      .filter(o => o.ev.type !== "staff" && !(o.ev.type === "dropin" && o.ev.location === "centre")).slice(0, max);
+    if (!list.length) return "";
+    return `<section class="d-coming" aria-label="Coming up"><h2 class="d-h">Coming up</h2>
+      <ul class="d-clist">${list.map(o => `<li class="t-${o.ev.type}"><span class="dc-day"><b>${esc(T.DAY_SHORT[T.dow(o.date)])}</b>${esc(T.fmtDate(o.date, "dm"))}</span>
+        <span class="dc-main"><span class="dc-title">${esc(o.ev.title)}</span><span class="dc-meta">${T.fmtRange(o.ev.start, o.ev.end)}</span></span></li>`).join("")}</ul></section>`;
   }
 
   function paintSlide() {
