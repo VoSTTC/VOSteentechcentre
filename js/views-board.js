@@ -194,7 +194,7 @@
   let tickKey = "", tickStart = 0, tickDur = 0, tickRot = null;
   function tickerHTML(head) {
     const tk = C.display.ticker || {};
-    const qr = T.signupUrl() ? `<span class="d-su"><span class="qr" id="dQR" aria-hidden="true"></span><span>Scan to<br>sign up</span></span>` : "";
+    const qr = T.signupUrl() ? `<a class="d-su" href="${esc(T.signupUrl())}" target="_blank" rel="noopener noreferrer"><span class="qr" id="dQR" aria-hidden="true"></span><span class="su-scan">Scan to<br>sign up</span><span class="su-tap">New? Sign up</span></a>` : "";
     if (tk.on === false) return `<div class="d-foot"><span>${icon("checkin")}Sign in when you arrive${head !== null ? ` · ${head} youth here now` : ""}</span>${qr}<span>${esc(C.tagline)}</span></div>`;
     const items = tickerItems();
     if (head !== null) items.splice(1, 0, { k: "signin", tx: `${head} youth in the centre right now` });
