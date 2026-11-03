@@ -236,7 +236,15 @@
       <p class="d-s-title">${esc(a.title)}</p>${a.body ? `<p class="d-s-body">${esc(a.body)}</p>` : ""}
       ${list.length > 1 ? `<div class="d-dots" aria-hidden="true">${list.map((_, i) => `<i class="${i === slideIdx ? "on" : ""}"></i>`).join("")}</div>` : ""}
     </div>`;
+    fitSlide();
   }
+  function fitSlide() {
+    const s = dispEl && dispEl.querySelector(".d-slide");
+    if (s) T.fitText(s, [".d-s-title", ".d-s-body"], 14);
+  }
+  // fonts can arrive after the first paint and change text widths
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => fitSlide());
+  window.addEventListener("resize", () => { clearTimeout(fitSlide._t); fitSlide._t = setTimeout(fitSlide, 150); });
   function paintDisplay() {
     if (!dispEl) return;
     dispEl.innerHTML = `<div class="display" id="displayRoot" tabindex="-1">${displayHTML()}</div>`;

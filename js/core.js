@@ -438,6 +438,20 @@ window.TTC = (function () {
       return true;
     } catch (e) { return false; }
   }
+  // shrinks the text inside `box` until it fits, so long announcements never spill out
+  function fitText(box, selectors, minPx) {
+    if (!box) return;
+    const els = selectors.map(s => box.querySelector(s)).filter(Boolean);
+    els.forEach(e => { e.style.fontSize = ""; });
+    const prev = box.style.justifyContent; box.style.justifyContent = "flex-start";
+    const fits = () => box.scrollHeight <= box.clientHeight + 1 && box.scrollWidth <= box.clientWidth + 1;
+    for (let i = 0; i < 40 && !fits(); i++) {
+      let shrunk = false;
+      els.forEach(e => { const fs = parseFloat(getComputedStyle(e).fontSize); if (fs > (minPx || 14)) { e.style.fontSize = (fs * 0.92) + "px"; shrunk = true; } });
+      if (!shrunk) break;
+    }
+    box.style.justifyContent = prev;
+  }
   const staffPill = () => `<span class="staff-pill">${icon("lock")}<span>Staff only</span></span>`;
 
   load();
@@ -447,6 +461,6 @@ window.TTC = (function () {
     deviceTZ, tzOffsetsDiffer, db, occursOn, occurrences, describeRepeat, conflictsFor, conflictKeys, conflictPairs,
     timesOverlap, locationsClash, zone, location, activity, isStaff, unlockStaff, lockStaff, staffUntil,
     icon, arrows, toast, modal, closeModal, confirmDialog, exportFile, printPage, toCSV, toICS, embedded,
-    typeChip, statusChip, staffPill, signupUrl, drawQR, views: {}
+    typeChip, statusChip, staffPill, signupUrl, drawQR, fitText, views: {}
   };
 })();

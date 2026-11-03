@@ -168,8 +168,11 @@
       <div class="sh-foot"><span>${icon("star")}Made something you're proud of? Show a staff member to add it to the board.</span><span>${esc(C.tagline)}</span></div>
       <div class="brand-band" aria-hidden="true"><i></i><i></i></div>
       ${ctl()}</div>`;
-    wire();
+    wire(); fitShow();
   }
+  function fitShow() { const t = el && el.querySelector(".sh-text"); if (t) T.fitText(t, [".sh-title", ".sh-cap", ".sh-maker"], 14); }
+  if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => fitShow());
+  window.addEventListener("resize", () => { clearTimeout(fitShow._t); fitShow._t = setTimeout(fitShow, 150); });
   function ctl() {
     return `<div class="d-ctl" id="dCtl">
       <a class="btn sm" href="#home">${icon("left")}<span>Exit</span></a>
