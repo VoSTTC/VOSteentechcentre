@@ -12,7 +12,7 @@
 
    Program descriptions in `activities` are working drafts for staff to edit.
    ========================================================================= */
-window.TTC_DATA_VERSION = 3;
+window.TTC_DATA_VERSION = 4;
 
 window.TTC_SAMPLE = function () {
   const OPEN = "2027-01-05"; // first day of drop-in (Tuesday)
@@ -98,7 +98,7 @@ window.TTC_SAMPLE = function () {
       return ev({ id: "ev-" + id, title: a.name, type: "workshop", activity: id, zone: a.zone, location: a.location,
         date: addDays(OPEN, i * 7), start: "16:00", end: "17:00", repeat: { days: [2, 6], every: 4, until: "" },
         staff: "TTC Coordinator", status: "tentative",
-        notes: "Level Up Lab runs Tuesday and Saturday, 4 to 5 PM (confirmed). The order of topics week to week is still to confirm." });
+        notes: "Level Up Lab runs Tuesday and Saturday, 4:00 to 5:00 PM (confirmed). The order of topics week to week is still to confirm." });
     }),
 
     /* ---- TTC booking calendar ---- */
@@ -108,7 +108,7 @@ window.TTC_SAMPLE = function () {
     ev({ id: "ev-bk-journey", title: "STEM Journey Lunch & Learn", type: "special", location: "centre",
       date: "2026-11-07", start: "11:00", end: "14:00", staff: "Visions of Science (Journey program)", capacity: "50",
       status: "tentative",
-      notes: "TTC booking 11 AM to 2 PM for about 50 youth. The event invite runs to 3 PM and says it is tentatively held in the TTC." }),
+      notes: "TTC booking 11:00 AM to 2:00 PM for about 50 youth. The event invite runs to 3:00 PM and says it is tentatively held in the TTC." }),
 
     /* ---- meetings in the centre (coordinator's calendar) ---- */
     ev({ id: "ev-board-setup", title: "Board retreat: room setup and materials", type: "staff", location: "centre",
@@ -126,9 +126,9 @@ window.TTC_SAMPLE = function () {
 
   const announcements = [
     { id: "an-opening", kind: "announcement", title: "Drop-in opens Tuesday, January 5",
-      body: "Free drop-in for teens: Tuesday to Friday 2 to 7 PM, Saturday 3 to 7 PM. Closed Sunday and Monday.",
+      body: "Free drop-in for teens: Tuesday to Friday 2:00 to 7:00 PM, Saturday 3:00 to 7:00 PM. Closed Sunday and Monday.",
       start: "2026-11-03", end: "2027-01-04", onDisplay: true, pinned: true, consent: true, status: "confirmed" },
-    { id: "an-lul", kind: "reminder", title: "Level Up Lab: Tuesdays and Saturdays, 4 to 5 PM",
+    { id: "an-lul", kind: "reminder", title: "Level Up Lab: Tuesdays and Saturdays, 4:00 to 5:00 PM",
       body: "A new skill to try each week: 3D printing, laser engraving, video editing and digital illustration. No experience needed, and drop-in stays open.",
       start: "2026-11-03", end: "", onDisplay: true, pinned: false, consent: true, status: "confirmed" },
     { id: "an-welcome", kind: "announcement", title: "Welcome to the Teen Tech Centre",

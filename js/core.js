@@ -31,7 +31,7 @@ window.TTC = (function () {
   function fmtTime(hm) {
     if (!hm) return "";
     let [h, m] = hm.split(":").map(Number); const ap = h >= 12 ? "PM" : "AM"; h = h % 12 || 12;
-    return m ? `${h}:${pad(m)} ${ap}` : `${h} ${ap}`;
+    return `${h}:${pad(m)} ${ap}`;
   }
   const fmtRange = (a, b) => `${fmtTime(a)} to ${fmtTime(b)}`;
   function fmtDate(iso, style) {

@@ -167,7 +167,7 @@
     const byTime = {}; series.forEach(e => { const k = e.start + "-" + e.end; (byTime[k] = byTime[k] || []).push(...e.repeat.days); });
     const open = new Set(series.flatMap(e => e.repeat.days));
     const closed = [0, 1, 2, 3, 4, 5, 6].filter(d => !open.has(d));
-    const parts = Object.entries(byTime).map(([k, days]) => { const [a, b] = k.split("-"); return `${dayList([...new Set(days)])} ${T.fmtTime(a).replace(" PM", "").replace(" AM", "")} to ${T.fmtTime(b)}`; });
+    const parts = Object.entries(byTime).map(([k, days]) => { const [a, b] = k.split("-"); return `${dayList([...new Set(days)])} ${T.fmtTime(a).slice(-2) === T.fmtTime(b).slice(-2) ? T.fmtTime(a).slice(0, -3) : T.fmtTime(a)} to ${T.fmtTime(b)}`; });
     return `Drop-in hours: ${parts.join(" · ")}` + (closed.length ? ` · Closed ${dayList(closed)}` : "");
   }
   function tickerItems() {
