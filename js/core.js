@@ -70,9 +70,9 @@ window.TTC = (function () {
     if (stored && (stored.dataVersion || 1) < (window.TTC_DATA_VERSION || 1)) {
       // newer schedule shipped with the app: replace content, keep real sign-ins on this device
       const keep = (stored.attendance || []).filter(a => !a.sample);
-      data = seed(); data.attendance = keep; data.equipment = stored.equipment || [];
+      data = seed(); data.attendance = keep; data.equipment = stored.equipment || []; data.showcase = stored.showcase || [];
     } else data = stored || seed();
-    ["events", "activities", "announcements", "attendance", "equipment"].forEach(k => { if (!Array.isArray(data[k])) data[k] = []; });
+    ["events", "activities", "announcements", "attendance", "equipment", "showcase"].forEach(k => { if (!Array.isArray(data[k])) data[k] = []; });
     purgeAttendance();
     save(true);
   }
@@ -105,10 +105,10 @@ window.TTC = (function () {
     remove(k, id) { data[k] = data[k].filter(x => x.id !== id); save(); },
     replaceAll(obj) {
       data = Object.assign({ version: 1 }, obj);
-      ["events", "activities", "announcements", "attendance", "equipment"].forEach(k => { if (!Array.isArray(data[k])) data[k] = []; });
+      ["events", "activities", "announcements", "attendance", "equipment", "showcase"].forEach(k => { if (!Array.isArray(data[k])) data[k] = []; });
       save();
     },
-    resetToSample() { const keep = data.attendance.filter(a => !a.sample), eq = data.equipment; data = seed(); data.attendance = keep; data.equipment = eq; save(); },
+    resetToSample() { const keep = data.attendance.filter(a => !a.sample), eq = data.equipment, sc = data.showcase; data = seed(); data.attendance = keep; data.equipment = eq; data.showcase = sc; save(); },
     clearSample() {
       data.events = data.events.filter(e => e.status !== "sample");
       data.announcements = data.announcements.filter(a => a.status !== "sample");

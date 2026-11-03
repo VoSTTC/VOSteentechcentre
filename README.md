@@ -19,6 +19,7 @@ Plain HTML, CSS and JavaScript. No build step, no server code.
 | `#signin` | Youth sign-in and sign-out (first name and last initial), plus a New? Sign up tab that opens the VoS Google Form |
 | `#equipment` | Sign-in sheets for the recording studio, photo studio, 3D printers and laser cutter |
 | `#announcements` | Announcements, reminders and shout-outs |
+| `#showcase` | Smart board carousel of youth projects. Staff add each project (photo, title, first name, caption) and confirm consent. |
 | `#display` | Large-text TV display: now, up next, rotating announcements and a news ticker. No names. |
 | `#staff` | Staff tools: overview, schedule, programs, announcements, attendance, data and backup |
 
@@ -39,6 +40,8 @@ Plain HTML, CSS and JavaScript. No build step, no server code.
 - Clearing browser data, private windows or another browser start fresh.
 - Nothing is sent to Google Calendar, Salesforce or any other service. The `.ics` and `.csv` exports are files you import yourself.
 - Attendance is removed after 30 days (configurable) and never appears on public pages or the TV display.
+- Showcase photos are stored in the browser's IndexedDB on the device that runs the smart board.
+  They are not part of the Data & backup file, so add projects on that device.
 
 ## Before real use
 

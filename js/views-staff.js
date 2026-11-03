@@ -6,7 +6,7 @@
   const T = window.TTC, C = T.C, esc = T.esc, icon = T.icon;
   const TABS = [
     ["overview", "Overview", "home"], ["schedule", "Schedule", "calendar"], ["programs", "Programs", "grid"],
-    ["announcements", "Announcements", "megaphone"], ["attendance", "Attendance", "checkin"], ["data", "Data & backup", "download"]
+    ["announcements", "Announcements", "megaphone"], ["attendance", "Attendance", "checkin"], ["showcase", "Showcase", "star"], ["data", "Data & backup", "download"]
   ];
   let tab = "overview", attDate = null, root = null;
 
@@ -48,7 +48,7 @@
       };
     });
     const p = el.querySelector("#panel");
-    ({ overview, schedule, programs, announcements, attendance, data })[tab](p);
+    ({ overview, schedule, programs, announcements, attendance, data, showcase: q => T.showcaseStaff(q) })[tab](p);
   }
 
   /* ---------------- overview ---------------- */
@@ -273,7 +273,7 @@
     p.querySelector("#impGo").onclick = () => restore(p.querySelector("#impTxt").value);
     p.querySelector("#clrS").onclick = clearSample;
     p.querySelector("#rsS").onclick = async () => { if (await T.confirmDialog("Replace the schedule, programs and announcements on this device with the starting schedule that ships with the app? Sign-ins stay. Your own edits will be lost unless you back up first.", { title: "Reset schedule", confirmLabel: "Reset", danger: true })) { T.db.resetToSample(); T.toast("Starting schedule restored."); } };
-    p.querySelector("#wipe").onclick = async () => { if (await T.confirmDialog("Erase every schedule entry, announcement, sign-in and activity on this device? This cannot be undone. Download a backup first if you need one.", { title: "Erase all data", confirmLabel: "Erase everything", danger: true })) { T.db.replaceAll({ events: [], activities: [], announcements: [], attendance: [], equipment: [], hasSample: false }); T.toast("All data erased."); } };
+    p.querySelector("#wipe").onclick = async () => { if (await T.confirmDialog("Erase every schedule entry, announcement, sign-in and activity on this device? This cannot be undone. Download a backup first if you need one.", { title: "Erase all data", confirmLabel: "Erase everything", danger: true })) { T.db.replaceAll({ events: [], activities: [], announcements: [], attendance: [], equipment: [], showcase: [], hasSample: false }); if (T.clearShowcasePhotos) T.clearShowcasePhotos(); T.toast("All data erased."); } };
   }
 
   T.views.staff = { title: "Staff tools", render };

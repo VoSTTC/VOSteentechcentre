@@ -13,6 +13,7 @@
     { id: "equipment",     label: "Equipment",     icon: "cube" },
     { id: "announcements", label: "Announcements", icon: "megaphone" },
     { id: "display",       label: "Display",       icon: "tv" },
+    { id: "showcase",      label: "Showcase",      icon: "star" },
     { id: "staff",         label: "Staff tools",   icon: "lock", staff: true }
   ];
 
@@ -115,7 +116,7 @@
     const view = T.views[name];
     if (current && current.cleanup) { try { current.cleanup(); } catch (e) {} }
     current = view;
-    document.body.classList.toggle("display-mode", name === "display");
+    document.body.classList.toggle("display-mode", name === "display" || name === "showcase");
     document.querySelectorAll("[data-nav]").forEach(a => {
       const on = a.dataset.nav === name || (name === "activity" && a.dataset.nav === "programs");
       on ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current");
@@ -169,8 +170,10 @@
   const CARDS = [
     { id: "schedule", name: "Running Schedule", blurb: "Week, list and today views of drop-in hours, workshops, partner sessions and events.", icon: "calendar", c: "var(--c-lightblue)" },
     { id: "programs", name: "Programs & Activities", blurb: "Zones, activities, equipment and supervision notes, plus Spark Card ideas.", icon: "grid", c: "var(--c-orange)" },
-    { id: "signin", name: "Youth Sign-in", blurb: "Sign in or out each visit, sign up on your first visit, and sign in to the studios, 3D printers and laser cutter.", icon: "checkin", c: "var(--c-mint)" },
+    { id: "signin", name: "Youth Sign-in", blurb: "Sign in or out each visit. First time? Sign up here.", icon: "checkin", c: "var(--c-mint)" },
     { id: "announcements", name: "Announcements", blurb: "What is happening at the centre, plus shout-outs.", icon: "megaphone", c: "var(--c-yellow)" },
+    { id: "equipment", name: "Equipment Sign-in", blurb: "Recording studio, photo studio, 3D printers and laser cutter. See what's free and sign in.", icon: "cube", c: "var(--c-redorange)" },
+    { id: "showcase", name: "Project Showcase", blurb: "A smart board carousel of youth projects, added and approved by staff.", icon: "star", c: "var(--c-lavender)" },
     { id: "display", name: "Centre Display", blurb: "Large-text TV screen with what is on now, what is next and announcements.", icon: "tv", c: "var(--c-midblue)" },
     { id: "staff", name: "Staff Tools", blurb: "Manage the schedule, programs, announcements and attendance. Export and print.", icon: "tool", c: "var(--c-purple)", staff: true }
   ];

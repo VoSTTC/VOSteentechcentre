@@ -78,6 +78,9 @@ window.TTC_CONFIG = {
   /* Attendance records older than this are removed automatically. */
   attendanceRetentionDays: 30,
 
+  /* Project showcase carousel (smart board) */
+  showcase: { slideSeconds: 10 },
+
   /* TV display options */
   display: {
     slideSeconds: 12,
