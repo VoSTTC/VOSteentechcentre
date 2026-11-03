@@ -24,7 +24,9 @@ Plain HTML, CSS and JavaScript. No build step, no server code.
 ## Where to change things
 
 - `js/config.js`: centre name, time zone, grid hours, zones, locations, event types, staff code, attendance retention, display timing.
-- `js/sample-data.js`: the sample content loaded the first time the app opens.
+- `js/sample-data.js`: the starting schedule (weekly hours, Level Up Lab, bookings, partner visits) and announcements.
+  After editing it, raise `TTC_DATA_VERSION` by 1 so every device picks up the new schedule on its next load
+  (sign-ins on each device are kept; edits made in the app on that device are replaced).
 - `css/app.css`: brand colours and layout. Colours follow the Visions Brand Guidelines & Asset Kit.
 - `assets/`: Visions logo and STEM patterns, extracted unchanged from the brand guide.
 
@@ -43,4 +45,4 @@ Plain HTML, CSS and JavaScript. No build step, no server code.
 2. **Shared data needs a backend.** A shared database (for example Firebase, Supabase or a Google Sheets-backed service)
    is required for the tablet, staff laptops and TV to see the same schedule live.
 3. **Youth data approval.** Get organizational approval before storing youth names on any device or service.
-4. **Replace sample content.** Staff tools > Overview > Clear sample content. Confirm hours against the latest schedule.
+4. **Review program descriptions.** Activity descriptions and equipment notes are drafts. Edit them in Staff tools > Programs.

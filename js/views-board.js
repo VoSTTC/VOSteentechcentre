@@ -124,7 +124,7 @@
     const nowL = occ.filter(o => T.mins(o.ev.start) <= t.minutes && T.mins(o.ev.end) > t.minutes);
     const next = occ.filter(o => T.mins(o.ev.start) > t.minutes).slice(0, 4);
     const open = nowL.some(o => o.ev.type === "dropin" && o.ev.location === "centre");
-    const nextOpen = !open ? T.occurrences(t.date, T.addDays(t.date, 14)).find(o => o.ev.type === "dropin" && o.ev.location === "centre" && (o.date > t.date || T.mins(o.ev.start) > t.minutes)) : null;
+    const nextOpen = !open ? T.occurrences(t.date, T.addDays(t.date, 120)).find(o => o.ev.type === "dropin" && o.ev.location === "centre" && (o.date > t.date || T.mins(o.ev.start) > t.minutes)) : null;
     const head = C.display.showHeadcount && T.openTodayAttendance ? T.openTodayAttendance().length : null;
     const tile = (o, big) => `<li class="d-ev t-${o.ev.type} ${big ? "big" : ""}">
       <span class="d-kind">${icon(C.types[o.ev.type].icon)}${esc(C.types[o.ev.type].short)}</span>

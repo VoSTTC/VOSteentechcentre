@@ -62,12 +62,16 @@ window.TTC = (function () {
     catch (e) { persistent = false; return null; }
   }
   function seed() {
-    const t = now().date;
-    const s = window.TTC_SAMPLE(weekStart(t), addDays, t);
-    return { version: 1, seededAt: new Date().toISOString(), hasSample: true, ...s };
+    const s = window.TTC_SAMPLE();
+    return { version: 1, dataVersion: window.TTC_DATA_VERSION || 1, seededAt: new Date().toISOString(), hasSample: false, ...s };
   }
   function load() {
-    data = readRaw() || seed();
+    const stored = readRaw();
+    if (stored && (stored.dataVersion || 1) < (window.TTC_DATA_VERSION || 1)) {
+      // newer schedule shipped with the app: replace content, keep real sign-ins on this device
+      const keep = (stored.attendance || []).filter(a => !a.sample);
+      data = seed(); data.attendance = keep;
+    } else data = stored || seed();
     ["events", "activities", "announcements", "attendance"].forEach(k => { if (!Array.isArray(data[k])) data[k] = []; });
     purgeAttendance();
     save(true);
@@ -103,7 +107,7 @@ window.TTC = (function () {
       ["events", "activities", "announcements", "attendance"].forEach(k => { if (!Array.isArray(data[k])) data[k] = []; });
       save();
     },
-    resetToSample() { data = seed(); save(); },
+    resetToSample() { const keep = data.attendance.filter(a => !a.sample); data = seed(); data.attendance = keep; save(); },
     clearSample() {
       data.events = data.events.filter(e => e.status !== "sample");
       data.announcements = data.announcements.filter(a => a.status !== "sample");

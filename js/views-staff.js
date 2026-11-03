@@ -227,7 +227,7 @@
         <section class="panel"><h2>${icon("trash")}Reset</h2>
           <div class="stack">
             <button class="btn" id="clrS" type="button">Clear sample content</button>
-            <button class="btn" id="rsS" type="button">Reset to sample content</button>
+            <button class="btn" id="rsS" type="button">Reset to the starting schedule</button>
             <button class="btn danger" id="wipe" type="button">Erase all data on this device</button>
           </div></section>
       </div>`;
@@ -242,7 +242,7 @@
     p.querySelector("#imp").onchange = e => { const f = e.target.files[0]; if (!f) return; const r = new FileReader(); r.onload = () => restore(r.result); r.readAsText(f); };
     p.querySelector("#impGo").onclick = () => restore(p.querySelector("#impTxt").value);
     p.querySelector("#clrS").onclick = clearSample;
-    p.querySelector("#rsS").onclick = async () => { if (await T.confirmDialog("Replace everything on this device with the sample content? Your own entries will be lost unless you back up first.", { title: "Reset to sample", confirmLabel: "Reset", danger: true })) { T.db.resetToSample(); T.toast("Sample content restored."); } };
+    p.querySelector("#rsS").onclick = async () => { if (await T.confirmDialog("Replace the schedule, programs and announcements on this device with the starting schedule that ships with the app? Sign-ins stay. Your own edits will be lost unless you back up first.", { title: "Reset schedule", confirmLabel: "Reset", danger: true })) { T.db.resetToSample(); T.toast("Starting schedule restored."); } };
     p.querySelector("#wipe").onclick = async () => { if (await T.confirmDialog("Erase every schedule entry, announcement, sign-in and activity on this device? This cannot be undone. Download a backup first if you need one.", { title: "Erase all data", confirmLabel: "Erase everything", danger: true })) { T.db.replaceAll({ events: [], activities: [], announcements: [], attendance: [], hasSample: false }); T.toast("All data erased."); } };
   }
 

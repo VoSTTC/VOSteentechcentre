@@ -14,7 +14,7 @@ window.TTC_CONFIG = {
   timeZoneLabel: "Eastern Time (Toronto)",
 
   /* Week grid range (24h clock). */
-  gridStartHour: 11,
+  gridStartHour: 9,
   gridEndHour: 20,
 
   /* ---- PROTOTYPE STAFF GATE ----
@@ -22,7 +22,7 @@ window.TTC_CONFIG = {
      file. It only hides editing controls on a shared device. Replace with
      real staff accounts (for example Google Workspace sign-in on a backend)
      before using this app with real youth information. */
-  staffCode: "2468",
+  staffCode: "2048",
   staffMinutes: 20,
 
   /* Attendance records older than this are removed automatically. */

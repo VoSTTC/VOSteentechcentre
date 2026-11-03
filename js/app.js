@@ -160,9 +160,9 @@
       if (t.minutes < open) return { state: "later", text: `Opens today at ${T.fmtTime(hm(open))}`, sub: `Drop-in until ${T.fmtTime(hm(close))}` };
       if (t.minutes < close) return { state: "open", text: `Open now until ${T.fmtTime(hm(close))}`, sub: "Drop-in. Sign in when you arrive." };
     }
-    const next = T.occurrences(T.addDays(t.date, 1), T.addDays(t.date, 14)).find(o => o.ev.type === "dropin" && o.ev.location === "centre");
+    const next = T.occurrences(T.addDays(t.date, 1), T.addDays(t.date, 120)).find(o => o.ev.type === "dropin" && o.ev.location === "centre");
     return { state: "closed", text: todays.length ? "Closed for today" : "No drop-in today",
-      sub: next ? `Next drop-in: ${T.fmtDate(next.date, "short")} at ${T.fmtTime(next.ev.start)}` : "No drop-in hours scheduled in the next two weeks" };
+      sub: next ? `Next drop-in: ${T.fmtDate(next.date, "short")} at ${T.fmtTime(next.ev.start)}` : "No drop-in hours on the schedule yet" };
   }
 
   const CARDS = [
