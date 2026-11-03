@@ -144,6 +144,7 @@
           <h2 class="d-h">Up next today</h2>
           ${next.length ? `<ul class="d-list">${next.map(o => tile(o)).join("")}</ul>` : `<p class="d-none">Nothing else scheduled today.</p>`}
           ${comingHTML(t, nowL.length + next.length && window.innerHeight < 1300 ? 0 : 3)}
+          ${monthHTML(t)}
         </section>
         <section class="d-right" aria-label="Announcements" aria-live="polite" id="dSlides"></section>
       </div>
@@ -226,6 +227,35 @@
     runEl.style.animationDelay = -(((Date.now() - tickStart) / 1000) % tickDur) + "s";
   }
 
+  // month calendar, shown on landscape screens (TV, laptop, iPad sideways)
+  function monthHTML(t) {
+    const [y, m] = t.date.split("-").map(Number);
+    const first = `${y}-${T.pad(m)}-01`;
+    const days = new Date(Date.UTC(y, m, 0)).getUTCDate();
+    const last = `${y}-${T.pad(m)}-${T.pad(days)}`;
+    const occ = T.occurrences(first, last).filter(o => o.ev.type !== "staff");
+    const open = new Set(occ.filter(o => o.ev.type === "dropin" && o.ev.location === "centre").map(o => o.date));
+    const evs = occ.filter(o => !(o.ev.type === "dropin" && o.ev.location === "centre"));
+    const lead = T.dow(first), weeks = Math.ceil((lead + days) / 7);
+    let cells = "";
+    for (let i = 0; i < lead; i++) cells += `<div class="mc-cell out"></div>`;
+    for (let d = 1; d <= days; d++) {
+      const ds = `${y}-${T.pad(m)}-${T.pad(d)}`, list = evs.filter(o => o.date === ds);
+      cells += `<div class="mc-cell ${ds === t.date ? "today" : ""} ${open.has(ds) ? "open" : ""} ${ds < t.date ? "past" : ""}">
+        <span class="mc-n">${d}</span>
+        ${list.slice(0, 2).map(o => `<span class="mc-ev t-${o.ev.type}">${icon(C.types[o.ev.type].icon)}<span>${esc(o.ev.title.replace(/^Level Up Lab:\s*/i, "LUL: ").replace(/^Partner visit:\s*/i, ""))}</span></span>`).join("")}
+        ${list.length > 2 ? `<span class="mc-more">+${list.length - 2} more</span>` : ""}
+      </div>`;
+    }
+    for (let i = lead + days; i < weeks * 7; i++) cells += `<div class="mc-cell out"></div>`;
+    return `<section class="d-month" aria-label="${esc(T.fmtDate(first, "month"))} calendar">
+      <div class="mc-head"><h2 class="d-h">${esc(T.fmtDate(first, "month"))}</h2>
+        <span class="mc-key">${open.size ? `<span><i class="k-open"></i>Drop-in open</span>` : ""}<span><i class="k-ev t-workshop"></i>Workshop</span><span><i class="k-ev t-partner"></i>Partner</span><span><i class="k-ev t-special"></i>Event</span></span></div>
+      <div class="mc-dow">${T.DAY_SHORT.map(x => `<span>${x}</span>`).join("")}</div>
+      <div class="mc-grid" style="grid-template-rows:repeat(${weeks},minmax(0,1fr))">${cells}</div>
+    </section>`;
+  }
+
   // "Coming up" list, shown on vertical screens where there is room for it
   function comingHTML(t, max) {
     if (!max) return "";
@@ -250,18 +280,27 @@
     </div>`;
     fitSlide();
   }
+  // hide the month calendar if the screen leaves it too little room to read
+  function fitMonth() {
+    const m = dispEl && dispEl.querySelector(".d-month"); if (!m || getComputedStyle(m).display === "none") return;
+    const g = m.querySelector(".mc-grid"), rows = parseInt(g.style.gridTemplateRows.match(/repeat\((\d+)/)[1], 10);
+    const rowH = g.getBoundingClientRect().height / rows;
+    m.classList.toggle("tight", rowH < window.innerHeight * 0.06);
+    if (rowH < window.innerHeight * 0.03) m.hidden = true;
+  }
   function fitSlide() {
     const s = dispEl && dispEl.querySelector(".d-slide");
     if (s) T.fitText(s, [".d-s-title", ".d-s-body"], 14);
   }
   // fonts can arrive after the first paint and change text widths
   if (document.fonts && document.fonts.ready) document.fonts.ready.then(() => fitSlide());
-  window.addEventListener("resize", () => { clearTimeout(fitSlide._t); fitSlide._t = setTimeout(fitSlide, 150); });
+  window.addEventListener("resize", () => { clearTimeout(fitSlide._t); fitSlide._t = setTimeout(() => { if (dispEl) paintDisplay(); }, 200); });
   function paintDisplay() {
     if (!dispEl) return;
     dispEl.innerHTML = `<div class="display" id="displayRoot" tabindex="-1">${displayHTML()}</div>`;
     paintSlide();
     startTicker();
+    fitMonth();
     const dq = dispEl.querySelector("#dQR");
     if (dq && !T.drawQR(dq, T.signupUrl(), Math.round(window.innerHeight * 0.085))) dq.parentNode.hidden = true;
     const full = dispEl.querySelector("#dFull");
