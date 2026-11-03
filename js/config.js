@@ -32,7 +32,7 @@ window.TTC_CONFIG = {
      Google Workspace. This app never sees or stores them.
      Leave it empty to show "please see a staff member" instead. */
   signup: {
-    formUrl: "",
+    formUrl: "https://docs.google.com/forms/d/e/1FAIpQLScmjKtbPJtNzNA474Ez488sjlT4-VALhcKjQNvQ3oxS6WNsBw/viewform",
     formName: "Teen Tech Centre sign-up form"
   },
 
