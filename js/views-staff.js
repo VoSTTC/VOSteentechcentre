@@ -74,13 +74,7 @@
           <p class="muted">${sample ? "Example items are still in the app. Remove them once real content is in." : "All sample content has been removed."}</p>
           ${sample ? `<button class="btn sm" type="button" id="clrSample">Clear sample content</button>` : ""}</section>
       </div>
-      <section class="panel"><h2>${icon("users")}Memberships</h2>
-        <p>Memberships follow the parent or guardian first process on <a href="#join">Join the TTC</a>: <b>Pending guardian consent</b>, then <b>Youth registration invited</b>, then <b>Active</b>.</p>
-        <ul class="plain">
-          <li>Consent, registration and activation happen in the approved membership system (Salesforce), not in this app. This app never stores or shows membership status.</li>
-          <li>Parent or guardian form: ${T.guardianFormUrl() ? `<span class="here">connected</span>` : `<span class="warn-txt">${icon("alert")}pending. Not yet set up or approved.</span>`}</li>
-          <li>The sign-in tablet records visits only. It can't create or activate a membership.</li>
-        </ul></section>
+      ${membershipPanel()}
       <section class="panel"><h2>${icon("lock")}Before using with real youth information</h2>
         <ul class="plain">
           <li>The staff code is a prototype gate. Anyone can read it in the app files.</li>
@@ -91,6 +85,32 @@
     p.querySelectorAll("[data-occ]").forEach(b => b.onclick = () => T.openEventDetail(b.dataset.occ));
     const cs = p.querySelector("#clrSample"); if (cs) cs.onclick = clearSample;
   }
+  /* ---------------- memberships (Salesforce) ---------------- */
+  function membershipPanel() {
+    const J = C.join || {};
+    const rawForm = String(J.guardianFormUrl || "").trim();
+    const hosts = (J.approvedFormHosts || []).filter(Boolean);
+    const links = (J.staffLinks || []).map(l => ({ label: l.label, url: T.safeLink(l.url) }));
+    const tick = (done, text, help) => `<li class="ck ${done ? "done" : ""}"><span class="ck-box" aria-hidden="true">${done ? icon("checkin") : ""}</span><span><b>${done ? "Done" : "To do"}:</b> ${text}${help ? `<span class="sub">${help}</span>` : ""}</span></li>`;
+    const ret = ["join-thanks", "join-confirmed", "join-complete"];
+    return `<section class="panel mem-panel"><h2>${icon("users")}Memberships</h2>
+      <p>Memberships follow the parent or guardian first process on <a href="#join">Join the TTC</a>: <b>Pending guardian consent</b>, then <b>Youth registration invited</b>, then <b>Active</b>. Consent, registration and activation all happen in Salesforce. This app never stores or shows membership details.</p>
+      ${links.some(l => l.url) ? `<div class="tool-row">${links.filter(l => l.url).map(l => `<a class="btn" href="${esc(l.url)}" target="_blank" rel="noopener noreferrer">${icon("arrow")}<span>${esc(l.label)}</span></a>`).join("")}</div>` : ""}
+      <h3>Setup checklist</h3>
+      <ul class="checklist">
+        ${tick(hosts.length > 0, "Approved form tool address added", "js/config.js: join.approvedFormHosts")}
+        ${tick(!!T.guardianFormUrl(), "Parent or guardian form connected", rawForm && !T.guardianFormUrl() ? `${icon("alert")}A link is set, but it isn't on an approved form address, so it's switched off.` : "js/config.js: join.guardianFormUrl, after the Salesforce admin approves it")}
+        ${tick(links.some(l => l.url), "Salesforce links for staff added", "js/config.js: join.staffLinks (report or list view links)")}
+        ${tick(J.showReviewNotes === false, "Consent, privacy and youth agreement wording approved by VoS", "Then set join.showReviewNotes to false")}
+        <li class="ck"><span class="ck-box" aria-hidden="true"></span><span><b>Check:</b> the old youth Google Form is closed or retired<span class="sub">It collected youth details without a guardian step.</span></span></li>
+      </ul>
+      <h3>Form tool return pages</h3>
+      <p class="small">Give these links to the Salesforce admin. They're the "thank you" pages the form tool should send people to.</p>
+      <dl class="ret-list">${ret.map(r => `<div><dt>${esc({ "join-thanks": "After the guardian form", "join-confirmed": "After consent is confirmed", "join-complete": "After the youth registration" }[r])}</dt><dd><code>${esc(T.siteUrl(r))}</code></dd></div>`).join("")}</dl>
+      <p class="small"><a href="https://github.com/VoSTTC/VOSteentechcentre/blob/main/docs/membership-setup.md" target="_blank" rel="noopener noreferrer">Salesforce setup guide</a> (docs/membership-setup.md)</p>
+    </section>`;
+  }
+
   async function clearSample() {
     if (await T.confirmDialog("Remove every schedule entry, announcement and attendance row marked Sample? Entries marked To confirm or Confirmed stay. Programs stay so you can edit them.", { title: "Clear sample content", confirmLabel: "Clear sample content", danger: true })) {
       T.db.clearSample(); T.toast("Sample content removed.");

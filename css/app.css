@@ -881,3 +881,19 @@ body.display-mode main { padding: 0; min-height: 0; }
 .rv-tag { display: inline-flex; align-items: center; gap: 5px; font-size: .72rem; font-weight: 700; letter-spacing: .02em; color: var(--c-purple); background: #f1eaf8; border: 1.5px dashed var(--c-lavender); border-radius: 6px; padding: 2px 8px; vertical-align: middle; }
 .join-hero .rv-tag { background: rgba(255,255,255,.14); color: #fff; border-color: rgba(255,255,255,.6); }
 .join-foot { margin-top: 4px; }
+
+.join-hero-in.one { grid-template-columns: minmax(0, 1fr); }
+.jr-status { margin-top: 14px; display: flex; gap: 8px; align-items: center; flex-wrap: wrap; font-weight: 600; }
+.jr-steps { margin: 0; padding-left: 22px; display: grid; gap: 8px; font-size: 1.02rem; max-width: 70ch; }
+.mem-panel h3 { font-size: 1rem; font-weight: 800; margin-top: 8px; }
+.checklist { list-style: none; margin: 0; padding: 0; display: grid; gap: 8px; }
+.ck { display: grid; grid-template-columns: 26px minmax(0, 1fr); gap: 10px; align-items: start; }
+.ck .sub { display: block; color: var(--muted); font-size: .82rem; }
+.ck-box { width: 22px; height: 22px; border-radius: 6px; border: 2px solid var(--line); display: grid; place-items: center; margin-top: 1px; }
+.ck.done .ck-box { background: var(--ok-ink); border-color: var(--ok-ink); color: #fff; }
+.ck.done .ck-box .ico { width: 14px; height: 14px; }
+.ret-list { margin: 0; display: grid; gap: 8px; }
+.ret-list > div { display: grid; gap: 2px; }
+.ret-list dt { font-weight: 700; font-size: .88rem; }
+.ret-list dd { margin: 0; }
+.ret-list code { font-size: .8rem; background: var(--surface-2); border: 1px solid var(--line); border-radius: 6px; padding: 3px 6px; overflow-wrap: anywhere; display: inline-block; max-width: 100%; }

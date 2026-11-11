@@ -119,7 +119,7 @@
     current = view;
     document.body.classList.toggle("display-mode", name === "display" || name === "showcase");
     document.querySelectorAll("[data-nav]").forEach(a => {
-      const on = a.dataset.nav === name || (name === "activity" && a.dataset.nav === "programs");
+      const on = a.dataset.nav === name || (name === "activity" && a.dataset.nav === "programs") || (name.startsWith("join-") && a.dataset.nav === "join");
       on ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current");
     });
     paintNotices();

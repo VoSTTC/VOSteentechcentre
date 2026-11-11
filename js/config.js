@@ -39,12 +39,27 @@ window.TTC_CONFIG = {
        in this file: everything here is public.
      embed: true only if the approved provider supports embedding and it has
        been tested on phones. Otherwise the page shows a button that opens it.
+     approvedFormHosts: the web address(es) of the approved form tool, for
+       example "yourorg.tfaforms.net" or "yourorg.my.site.com". The form link
+       is only used if it is on one of these hosts, so an unapproved form
+       can't be switched on by mistake.
+     staffLinks: Salesforce report or list view links for staff (they open
+       Salesforce, which asks staff to log in). Links only, never data.
      showReviewNotes: shows "Draft for VoS review" tags on wording that still
        needs sign-off. Set to false once VoS approves the wording.
-     ages: shown on the page. From the draft policy manual (TTC 3.1). */
+     ages: shown on the page. From the draft policy manual (TTC 3.1).
+     Setup steps for the Salesforce side: docs/membership-setup.md */
   join: {
+    // the public address of this site, used for the form tool's return pages
+    siteAddress: "https://vosttc.github.io/VOSteentechcentre/",
     guardianFormUrl: "",
     embed: false,
+    approvedFormHosts: [],
+    staffLinks: [
+      { label: "Pending guardian consent", url: "" },
+      { label: "Ready to activate", url: "" },
+      { label: "All TTC memberships", url: "" }
+    ],
     showReviewNotes: true,
     ages: "13 to 18"
   },

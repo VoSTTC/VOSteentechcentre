@@ -16,6 +16,7 @@ Plain HTML, CSS and JavaScript. No build step, no server code.
 | `#home` | Landing page with today at a glance and function cards |
 | `#schedule` | Week grid, list and today views; filters; details; add, edit, remove (staff) |
 | `#programs`, `#activity-<id>` | Program areas, activity pages with schedule, capacity, equipment and supervision notes |
+| `#join-thanks`, `#join-confirmed`, `#join-complete` | Return pages the form tool sends people to after each step. General next steps only. |
 | `#join` | Join the TTC: the parent or guardian first membership process, statuses, and participation and privacy information. Collects nothing. |
 | `#signin` | Member sign-in and sign-out (first name and last initial). The New? Join tab sends families to Join the TTC. |
 | `#equipment` | Sign-in sheets for the recording studio, photo studio, 3D printers and laser cutter |
@@ -58,8 +59,9 @@ Plain HTML, CSS and JavaScript. No build step, no server code.
 - Membership is parent or guardian first: **Pending guardian consent**, then **Youth registration invited**, then **Active**.
 - This site does not collect, store or show membership, guardian or youth information. Consent and status belong
   in the approved system (Salesforce).
-- The parent or guardian form is **not connected yet**. When the VoS Salesforce administrator approves a form,
-  paste its public link in `js/config.js` under `join.guardianFormUrl`. Set `join.embed` to true only if the
+- The parent or guardian form is **not connected yet**. The Salesforce side is described in
+  [docs/membership-setup.md](docs/membership-setup.md). When the VoS Salesforce administrator approves a form,
+  add its address to `join.approvedFormHosts` and paste its public link in `js/config.js` under `join.guardianFormUrl`. Set `join.embed` to true only if the
   provider supports embedding and it works on phones.
 - Never put passwords, API tokens or client secrets in this repository. Everything in it is public.
 - Wording tagged "Draft for VoS review" is placeholder text. Set `join.showReviewNotes` to false once approved.

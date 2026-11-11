@@ -23,7 +23,7 @@
 
   function cta() {
     const url = T.guardianFormUrl();
-    if (url && J().embed) {
+    if (url && J().embed === true) {
       return `<div class="join-embed"><iframe src="${esc(url)}" title="Parent or guardian membership form" loading="lazy"></iframe></div>
         <p class="muted small">Having trouble with the form? <a href="${esc(url)}" target="_blank" rel="noopener noreferrer">Open it in a new tab</a>.</p>`;
     }
@@ -38,6 +38,66 @@
         ${T.isStaff() ? `<p class="jp-staff">${T.staffPill()} Form connection pending. Add the approved form link in <b>js/config.js</b> under <b>join.guardianFormUrl</b> once the VoS Salesforce administrator confirms it.</p>` : ""}</div>
       </div>`;
   }
+
+  /* ---------------- return pages ----------------
+     The approved form tool sends people here after they submit. These pages
+     show general next steps only: no names, no record details, nothing read
+     from the link. Set these addresses as the form tool's "thank you" or
+     redirect pages (Staff tools > Overview lists the full links). */
+  const RETURN = {
+    "join-thanks": {
+      title: "Thanks for starting", eyebrow: "Step 1 of 4 done", status: STATUSES[0],
+      h: "Next, check your email",
+      steps: [
+        "Visions of Science will email you a link to confirm your permission. Select it to continue.",
+        "The membership stays pending until you confirm. If the email hasn't arrived within a day, check your spam folder or talk to TTC staff.",
+        "Once you confirm, the youth gets their own invitation link to finish registering."
+      ]
+    },
+    "join-confirmed": {
+      title: "Permission confirmed", eyebrow: "Step 2 of 4 done", status: STATUSES[1],
+      h: "Thank you. Your permission is confirmed",
+      steps: [
+        "The youth will get a personal invitation link to finish their own registration.",
+        "They'll fill in their details, choose their photo and video preference, and agree to the community agreements.",
+        "Then TTC staff check everything and activate the membership."
+      ]
+    },
+    "join-complete": {
+      title: "Registration sent", eyebrow: "Step 3 of 4 done", status: null,
+      h: "You're almost a member",
+      steps: [
+        "TTC staff will check your registration and activate your membership.",
+        "Once it's active, sign in at the front tablet when you arrive and sign out when you leave, every visit.",
+        "New to the equipment? Ask staff for a walkthrough before you use the studios, 3D printers or laser cutter."
+      ]
+    }
+  };
+  Object.entries(RETURN).forEach(([id, r]) => {
+    T.views[id] = {
+      title: r.title,
+      render(el) {
+        el.innerHTML = `
+          <section class="join-hero">
+            <div class="wrap join-hero-in one">
+              <div class="jh-copy">
+                <p class="eyebrow">${esc(r.eyebrow)} ${T.arrows("sm")}</p>
+                <h1>${esc(r.h)}</h1>
+                ${r.status ? `<p class="jr-status">Membership status: ${statusChip(r.status)}</p>` : `<p class="jr-status">Next: staff activate your membership, then it's ${statusChip(STATUSES[2])}</p>`}
+              </div>
+            </div>
+          </section>
+          <div class="wrap join-body">
+            <section class="panel" aria-labelledby="jr-h">
+              <h2 id="jr-h">${icon("info")}What happens next</h2>
+              <ol class="jr-steps">${r.steps.map(x => `<li>${esc(x)}</li>`).join("")}</ol>
+              <p class="small muted">${rv("return page wording")}</p>
+            </section>
+            <p><a class="btn" href="#join">${icon("left")}<span>See the full joining process</span></a></p>
+          </div>`;
+      }
+    };
+  });
 
   T.views.join = {
     title: "Join the TTC",

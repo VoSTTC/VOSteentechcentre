@@ -422,15 +422,28 @@ window.TTC = (function () {
     const s = C.statuses[status]; if (!s) return "";
     return `<span class="schip s-${status}" title="${esc(s.hint)}">${esc(s.label)}</span>`;
   }
-  // link to this site's Join the TTC page (used for QR codes and the ticker)
-  function signupUrl() {
-    try { return location.origin && location.origin !== "null" ? location.origin + location.pathname + "#join" : "#join"; } catch (e) { return "#join"; }
-  }
   // the approved parent/guardian form, if one has been configured
-  function guardianFormUrl() {
-    const u = String((C.join && C.join.guardianFormUrl) || "").trim();
-    return /^https:\/\/[^\s"'<>]+$/.test(u) ? u : "";
+  // only https links on an approved host count
+  function approvedUrl(raw) {
+    const u = String(raw || "").trim();
+    if (!/^https:\/\/[^\s"'<>]+$/.test(u)) return "";
+    let host = ""; try { host = new URL(u).hostname.toLowerCase(); } catch (e) { return ""; }
+    const ok = ((C.join && C.join.approvedFormHosts) || []).map(h => String(h).toLowerCase().trim()).filter(Boolean)
+      .some(h => host === h || host.endsWith("." + h));
+    return ok ? u : "";
   }
+  // the approved parent/guardian form, if one has been configured on an approved host
+  function guardianFormUrl() { return approvedUrl(C.join && C.join.guardianFormUrl); }
+  function safeLink(raw) { const u = String(raw || "").trim(); return /^https:\/\/[^\s"'<>]+$/.test(u) ? u : ""; }
+  // full link to a page of this site, e.g. siteUrl("join-thanks")
+  function siteUrl(hash) {
+    const base = String((C.join && C.join.siteAddress) || "").trim();
+    if (/^https:\/\/[^\s"'<>#]+$/.test(base)) return base.replace(/\/?$/, "/") + "#" + hash;
+    try { const L = window.location; if (L.origin && L.origin !== "null") return L.origin + L.pathname + "#" + hash; } catch (e) {}
+    return "#" + hash;
+  }
+  // link to the Join the TTC page (QR codes and the ticker)
+  const signupUrl = () => siteUrl("join");
   // draws a QR code into `el` (qrcodejs from cdnjs); falls back to nothing if it did not load
   function drawQR(el, text, size) {
     if (!el || !text) return false;
@@ -466,6 +479,6 @@ window.TTC = (function () {
     deviceTZ, tzOffsetsDiffer, db, occursOn, occurrences, describeRepeat, conflictsFor, conflictKeys, conflictPairs,
     timesOverlap, locationsClash, zone, location, activity, isStaff, unlockStaff, lockStaff, staffUntil,
     icon, arrows, toast, modal, closeModal, confirmDialog, exportFile, printPage, toCSV, toICS, embedded,
-    typeChip, statusChip, staffPill, signupUrl, guardianFormUrl, drawQR, fitText, views: {}
+    typeChip, statusChip, staffPill, signupUrl, guardianFormUrl, safeLink, siteUrl, drawQR, fitText, views: {}
   };
 })();
