@@ -107,7 +107,7 @@
       <h3>Form tool return pages</h3>
       <p class="small">Give these links to the Salesforce admin. They're the "thank you" pages the form tool should send people to.</p>
       <dl class="ret-list">${ret.map(r => `<div><dt>${esc({ "join-thanks": "After the guardian form", "join-confirmed": "After consent is confirmed", "join-complete": "After the youth registration" }[r])}</dt><dd><code>${esc(T.siteUrl(r))}</code></dd></div>`).join("")}</dl>
-      <p class="small"><a href="https://github.com/VoSTTC/VOSteentechcentre/blob/main/docs/membership-setup.md" target="_blank" rel="noopener noreferrer">Salesforce setup guide</a> (docs/membership-setup.md)</p>
+      <p class="small"><a href="https://github.com/VoSTTC/VOSteentechcentre/blob/main/docs/membership-setup.md" target="_blank" rel="noopener noreferrer">Salesforce setup guide</a> (docs/membership-setup.md) · <a href="#join-demo">Click-through demo of the process</a></p>
     </section>`;
   }
 

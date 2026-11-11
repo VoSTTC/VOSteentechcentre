@@ -17,6 +17,7 @@ Plain HTML, CSS and JavaScript. No build step, no server code.
 | `#schedule` | Week grid, list and today views; filters; details; add, edit, remove (staff) |
 | `#programs`, `#activity-<id>` | Program areas, activity pages with schedule, capacity, equipment and supervision notes |
 | `#join-thanks`, `#join-confirmed`, `#join-complete` | Return pages the form tool sends people to after each step. General next steps only. |
+| `#join-demo` | Click-through demo of the planned membership process with made-up example people. Nothing to type, nothing saved. |
 | `#join` | Join the TTC: the parent or guardian first membership process, statuses, and participation and privacy information. Collects nothing. |
 | `#signin` | Member sign-in and sign-out (first name and last initial). The New? Join tab sends families to Join the TTC. |
 | `#equipment` | Sign-in sheets for the recording studio, photo studio, 3D printers and laser cutter |

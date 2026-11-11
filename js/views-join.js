@@ -148,6 +148,7 @@
                   <p class="js-status">Status: ${statusChip(STATUSES[2])}</p></div>
               </li>
             </ol>
+            <p class="demo-link"><a class="btn" href="#join-demo">${icon("tv")}<span>See the planned process step by step (demo)</span></a></p>
             <p class="join-callout">${icon("lock")}<span><b>Signing in at the centre doesn't make you a member.</b> The sign-in tablet only records visits. A membership can only become active through the parent or guardian steps above.</span></p>
           </section>
 
