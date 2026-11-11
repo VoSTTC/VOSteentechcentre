@@ -36,6 +36,12 @@ Plain HTML, CSS and JavaScript. No build step, no server code.
 - `css/app.css`: brand colours and layout. Colours follow the Visions Brand Guidelines & Asset Kit.
 - `assets/`: Visions logo and STEM patterns, extracted unchanged from the brand guide.
 
+## Publishing updates
+
+- `index.html` loads each file with a version stamp (`?v=...`). Change the stamp whenever you change any file,
+  so browsers load the new version instead of a saved copy.
+- `.nojekyll` tells GitHub Pages to publish the files as they are, which is faster.
+
 ## Data and limits
 
 - Data is saved in the browser's local storage on each device. It survives refresh and restart.
