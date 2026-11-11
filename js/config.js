@@ -25,15 +25,28 @@ window.TTC_CONFIG = {
   staffCode: "2048",
   staffMinutes: 20,
 
-  /* ---- NEW MEMBER SIGN-UP ----
-     Paste the link to the Visions of Science sign-up Google Form here.
-     Use the form's "Send > link" URL (starts with https://docs.google.com/forms/
-     or https://forms.gle/). Responses go to the form's own response sheet in
-     Google Workspace. This app never sees or stores them.
-     Leave it empty to show "please see a staff member" instead. */
-  signup: {
-    formUrl: "https://docs.google.com/forms/d/e/1FAIpQLScmjKtbPJtNzNA474Ez488sjlT4-VALhcKjQNvQ3oxS6WNsBw/viewform",
-    formName: "Teen Tech Centre sign-up form"
+  /* ---- JOIN THE TTC (parent or guardian first) ----
+     The Join the TTC page explains membership and links to the approved
+     parent/guardian form. This website never collects, stores or shows
+     membership, guardian or youth information: that all lives in the
+     approved system (Salesforce, once the VoS Salesforce administrator
+     confirms the integration).
+
+     guardianFormUrl: the approved, Salesforce-connected form that a parent or
+       guardian uses to start membership. Paste its public https link here
+       ONLY after it is approved. Leave it empty and the page says the online
+       form is coming soon. Never put passwords, API tokens or client secrets
+       in this file: everything here is public.
+     embed: true only if the approved provider supports embedding and it has
+       been tested on phones. Otherwise the page shows a button that opens it.
+     showReviewNotes: shows "Draft for VoS review" tags on wording that still
+       needs sign-off. Set to false once VoS approves the wording.
+     ages: shown on the page. From the draft policy manual (TTC 3.1). */
+  join: {
+    guardianFormUrl: "",
+    embed: false,
+    showReviewNotes: true,
+    ages: "13 to 18"
   },
 
   /* ---- SPECIAL EQUIPMENT SIGN-IN SHEETS ----

@@ -185,7 +185,7 @@
       items.push({ k: "lul", tx: `Level Up Lab this week: ${topic}, ${days} at ${T.fmtTime(lul[0].ev.start)}` });
     }
     forDisplay().forEach(a => items.push({ k: a.kind, tx: a.title }));
-    if (T.signupUrl()) items.push({ k: "signup", tx: "New here? Scan the code to sign up" });
+    items.push({ k: "signup", tx: "New here? Scan the code to join the TTC. A parent or guardian starts your membership" });
     items.push({ k: "signin", tx: "Sign in when you arrive" });
     if ((C.equipment || []).length) items.push({ k: "equip", tx: `Using the ${C.equipment.map(s => s.name.replace(/^[A-Z](?=[a-z])/, c => c.toLowerCase())).join(", ").replace(/, ([^,]*)$/, " or $1")}? Sign in on the equipment sheet` });
     (C.display.ticker && C.display.ticker.extra || []).forEach(x => x && items.push({ k: "extra", tx: x }));
@@ -196,7 +196,7 @@
   let tickKey = "", tickStart = 0, tickDur = 0, tickRot = null;
   function tickerHTML(head) {
     const tk = C.display.ticker || {};
-    const qr = T.signupUrl() ? `<a class="d-su" href="${esc(T.signupUrl())}" target="_blank" rel="noopener noreferrer"><span class="qr" id="dQR" aria-hidden="true"></span><span class="su-scan">Scan to<br>sign up</span><span class="su-tap">New? Sign up</span></a>` : "";
+    const qr = T.signupUrl() ? `<a class="d-su" href="#join"><span class="qr" id="dQR" aria-hidden="true"></span><span class="su-scan">Scan to<br>join</span><span class="su-tap">New? Join the TTC</span></a>` : "";
     if (tk.on === false) return `<div class="d-foot"><span>${icon("checkin")}Sign in when you arrive${head !== null ? ` · ${head} youth here now` : ""}</span>${qr}<span>${esc(C.tagline)}</span></div>`;
     const items = tickerItems();
     if (head !== null) items.splice(1, 0, { k: "signin", tx: `${head} youth in the centre right now` });

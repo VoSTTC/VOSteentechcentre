@@ -74,6 +74,13 @@
           <p class="muted">${sample ? "Example items are still in the app. Remove them once real content is in." : "All sample content has been removed."}</p>
           ${sample ? `<button class="btn sm" type="button" id="clrSample">Clear sample content</button>` : ""}</section>
       </div>
+      <section class="panel"><h2>${icon("users")}Memberships</h2>
+        <p>Memberships follow the parent or guardian first process on <a href="#join">Join the TTC</a>: <b>Pending guardian consent</b>, then <b>Youth registration invited</b>, then <b>Active</b>.</p>
+        <ul class="plain">
+          <li>Consent, registration and activation happen in the approved membership system (Salesforce), not in this app. This app never stores or shows membership status.</li>
+          <li>Parent or guardian form: ${T.guardianFormUrl() ? `<span class="here">connected</span>` : `<span class="warn-txt">${icon("alert")}pending. Not yet set up or approved.</span>`}</li>
+          <li>The sign-in tablet records visits only. It can't create or activate a membership.</li>
+        </ul></section>
       <section class="panel"><h2>${icon("lock")}Before using with real youth information</h2>
         <ul class="plain">
           <li>The staff code is a prototype gate. Anyone can read it in the app files.</li>

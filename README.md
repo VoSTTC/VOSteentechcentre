@@ -16,7 +16,8 @@ Plain HTML, CSS and JavaScript. No build step, no server code.
 | `#home` | Landing page with today at a glance and function cards |
 | `#schedule` | Week grid, list and today views; filters; details; add, edit, remove (staff) |
 | `#programs`, `#activity-<id>` | Program areas, activity pages with schedule, capacity, equipment and supervision notes |
-| `#signin` | Youth sign-in and sign-out (first name and last initial), plus a New? Sign up tab that opens the VoS Google Form |
+| `#join` | Join the TTC: the parent or guardian first membership process, statuses, and participation and privacy information. Collects nothing. |
+| `#signin` | Member sign-in and sign-out (first name and last initial). The New? Join tab sends families to Join the TTC. |
 | `#equipment` | Sign-in sheets for the recording studio, photo studio, 3D printers and laser cutter |
 | `#announcements` | Announcements, reminders and shout-outs |
 | `#showcase` | Smart board carousel of youth projects. Staff add each project (photo, title, first name, caption) and confirm consent. |
@@ -26,7 +27,7 @@ Plain HTML, CSS and JavaScript. No build step, no server code.
 ## Where to change things
 
 - `js/config.js`: centre name, time zone, grid hours, zones, locations, event types, staff code, attendance retention,
-  display timing and ticker lines, the sign-up Google Form link (`signup.formUrl`), and the equipment sheets (`equipment`).
+  display timing and ticker lines, Join the TTC settings (`join`), and the equipment sheets (`equipment`).
 - `js/sample-data.js`: the starting schedule (weekly hours, Level Up Lab, bookings, partner visits) and announcements.
   After editing it, raise `TTC_DATA_VERSION` by 1 so every device picks up the new schedule on its next load
   (sign-ins on each device are kept; edits made in the app on that device are replaced).
@@ -51,3 +52,14 @@ Plain HTML, CSS and JavaScript. No build step, no server code.
    is required for the tablet, staff laptops and TV to see the same schedule live.
 3. **Youth data approval.** Get organizational approval before storing youth names on any device or service.
 4. **Review program descriptions.** Activity descriptions and equipment notes are drafts. Edit them in Staff tools > Programs.
+
+## Membership (Join the TTC)
+
+- Membership is parent or guardian first: **Pending guardian consent**, then **Youth registration invited**, then **Active**.
+- This site does not collect, store or show membership, guardian or youth information. Consent and status belong
+  in the approved system (Salesforce).
+- The parent or guardian form is **not connected yet**. When the VoS Salesforce administrator approves a form,
+  paste its public link in `js/config.js` under `join.guardianFormUrl`. Set `join.embed` to true only if the
+  provider supports embedding and it works on phones.
+- Never put passwords, API tokens or client secrets in this repository. Everything in it is public.
+- Wording tagged "Draft for VoS review" is placeholder text. Set `join.showReviewNotes` to false once approved.

@@ -7,6 +7,7 @@
 
   const NAV = [
     { id: "home",          label: "Home",          icon: "home" },
+    { id: "join",          label: "Join the TTC",  icon: "users" },
     { id: "schedule",      label: "Schedule",      icon: "calendar" },
     { id: "programs",      label: "Programs",      icon: "grid" },
     { id: "signin",        label: "Sign-in",       icon: "checkin" },
@@ -170,7 +171,7 @@
   const CARDS = [
     { id: "schedule", name: "Running Schedule", blurb: "Week, list and today views of drop-in hours, workshops, partner sessions and events.", icon: "calendar", c: "var(--c-lightblue)" },
     { id: "programs", name: "Programs & Activities", blurb: "Zones, activities, equipment and supervision notes, plus Spark Card ideas.", icon: "grid", c: "var(--c-orange)" },
-    { id: "signin", name: "Youth Sign-in", blurb: "Sign in or out each visit. First time? Sign up here.", icon: "checkin", c: "var(--c-mint)" },
+    { id: "signin", name: "Youth Sign-in", blurb: "Members sign in and out each visit. New here? Join the TTC first.", icon: "checkin", c: "var(--c-mint)" },
     { id: "announcements", name: "Announcements", blurb: "What is happening at the centre, plus shout-outs.", icon: "megaphone", c: "var(--c-yellow)" },
     { id: "equipment", name: "Equipment Sign-in", blurb: "Recording studio, photo studio, 3D printers and laser cutter. See what's free and sign in.", icon: "cube", c: "var(--c-redorange)" },
     { id: "showcase", name: "Project Showcase", blurb: "A smart board carousel of youth projects, added and approved by staff.", icon: "star", c: "var(--c-lavender)" },
@@ -194,6 +195,7 @@
               <h1>Best Buy <span class="nowrap">Teen Tech Centre</span></h1>
               <p class="hero-sub">${esc(C.venue)}</p>
               <p class="welcome">Welcome. Choose what you need below: check what is on, sign in, or find an activity. Staff tools unlock with the staff code.</p>
+              <div class="hero-join"><a class="btn big join-btn" href="#join">${icon("users")}<span>Join the TTC</span></a><span>New here? A parent or guardian starts your membership.</span></div>
             </div>
             <div class="glance" aria-label="Today at a glance">
               <p class="glance-date">${esc(T.fmtDate(t.date))}</p>

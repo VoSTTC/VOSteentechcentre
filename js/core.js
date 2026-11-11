@@ -422,8 +422,13 @@ window.TTC = (function () {
     const s = C.statuses[status]; if (!s) return "";
     return `<span class="schip s-${status}" title="${esc(s.hint)}">${esc(s.label)}</span>`;
   }
+  // link to this site's Join the TTC page (used for QR codes and the ticker)
   function signupUrl() {
-    const u = String((C.signup && C.signup.formUrl) || "").trim();
+    try { return location.origin && location.origin !== "null" ? location.origin + location.pathname + "#join" : "#join"; } catch (e) { return "#join"; }
+  }
+  // the approved parent/guardian form, if one has been configured
+  function guardianFormUrl() {
+    const u = String((C.join && C.join.guardianFormUrl) || "").trim();
     return /^https:\/\/[^\s"'<>]+$/.test(u) ? u : "";
   }
   // draws a QR code into `el` (qrcodejs from cdnjs); falls back to nothing if it did not load
@@ -461,6 +466,6 @@ window.TTC = (function () {
     deviceTZ, tzOffsetsDiffer, db, occursOn, occurrences, describeRepeat, conflictsFor, conflictKeys, conflictPairs,
     timesOverlap, locationsClash, zone, location, activity, isStaff, unlockStaff, lockStaff, staffUntil,
     icon, arrows, toast, modal, closeModal, confirmDialog, exportFile, printPage, toCSV, toICS, embedded,
-    typeChip, statusChip, staffPill, signupUrl, drawQR, fitText, views: {}
+    typeChip, statusChip, staffPill, signupUrl, guardianFormUrl, drawQR, fitText, views: {}
   };
 })();

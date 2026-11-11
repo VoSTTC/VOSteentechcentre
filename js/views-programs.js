@@ -170,14 +170,14 @@
     el.innerHTML = `
       <section class="kiosk wrap">
         <div class="kiosk-head">
-          <div><p class="eyebrow">Youth sign-in ${T.arrows("sm")}</p><h1>${S.tab === "in" ? "Welcome in!" : S.tab === "out" ? "Heading out?" : "First time here?"}</h1>
-          <p class="lede">${S.tab === "in" ? "Pick what you're here for, then add your first name and last initial." : S.tab === "out" ? "Type the same name you signed in with." : "Sign up once to become a Teen Tech Centre member. After that, just sign in each visit."}</p></div>
+          <div><p class="eyebrow">Youth sign-in ${T.arrows("sm")}</p><h1>${S.tab === "in" ? "Welcome in!" : S.tab === "out" ? "Heading out?" : "Not a member yet?"}</h1>
+          <p class="lede">${S.tab === "in" ? "Pick what you're here for, then add your first name and last initial." : S.tab === "out" ? "Type the same name you signed in with." : "Membership starts with a parent or guardian. Signing in here only records visits. It can't make you a member."}</p></div>
           <p class="here-count" aria-live="polite"><span class="big">${here}</span> youth signed in right now</p>
         </div>
         <div class="seg big" role="group" aria-label="Sign in, sign out or sign up">
           <button type="button" data-tab="in" aria-pressed="${S.tab === "in"}">${icon("checkin")}<span>Sign in</span></button>
           <button type="button" data-tab="out" aria-pressed="${S.tab === "out"}">${icon("signout")}<span>Sign out</span></button>
-          <button type="button" data-tab="new" aria-pressed="${S.tab === "new"}">${icon("plus")}<span>New? Sign up</span></button>
+          <button type="button" data-tab="new" aria-pressed="${S.tab === "new"}">${icon("plus")}<span>New? Join</span></button>
         </div>
         <div id="kioskBody"></div>
         <p class="privacy-note">${icon("lock")}<span>Sign-ins are saved on this centre device for attendance and removed after ${C.attendanceRetentionDays} days. Names never appear on the TV display. New here? Check in with staff before using equipment.</span></p>
@@ -256,31 +256,23 @@
     };
   }
 
-  /* ---------------- new member sign-up (Google Form link) ---------------- */
+  /* ---------------- not a member yet: send families to Join the TTC ---------------- */
   function renderSignup(body) {
     const url = T.signupUrl();
-    const name = (C.signup && C.signup.formName) || "Sign-up form";
-    if (!url) {
-      body.innerHTML = `<div class="signup-card">
-        <div class="su-copy"><h2>Sign up with staff</h2>
-        <p>The online sign-up form isn't available on this screen yet. Find a staff member and they'll get you set up.</p>
-        ${T.isStaff() ? `<p class="callout">${icon("info")}<span>Staff: add the Google Form link in <b>js/config.js</b> under <b>signup.formUrl</b> to turn on online sign-up and the QR code.</span></p>` : ""}</div></div>`;
-      return;
-    }
     body.innerHTML = `<div class="signup-card">
       <div class="su-copy">
-        <h2>${esc(name)}</h2>
+        <h2>Join the TTC</h2>
         <ol class="su-steps">
-          <li>Scan the code with your phone, or select <b>Open the sign-up form</b>.</li>
-          <li>Fill it in. It only takes a couple of minutes.</li>
-          <li>Come back here and sign in.</li>
+          <li>A parent or guardian starts your membership and gives permission.</li>
+          <li>Once permission is confirmed, you get your own invitation link to finish registering.</li>
+          <li>Staff activate your membership. Then you sign in here every visit.</li>
         </ol>
-        <a class="btn primary big" href="${esc(url)}" target="_blank" rel="noopener noreferrer">${icon("edit")}<span>Open the sign-up form</span></a>
-        <p class="su-note">${icon("lock")}<span>The form is run by Visions of Science in Google Forms. Your answers go to Visions of Science, not to this screen.</span></p>
+        <a class="btn primary big" href="#join">${icon("users")}<span>How to join the TTC</span></a>
+        <p class="su-note">${icon("info")}<span>Scan the code to open the Join the TTC page on your phone and share it with a parent or guardian.</span></p>
       </div>
       <figure class="su-qr">
-        <div class="qr" id="suQR" role="img" aria-label="QR code that opens the sign-up form"></div>
-        <figcaption>Scan to sign up on your phone</figcaption>
+        <div class="qr" id="suQR" role="img" aria-label="QR code that opens the Join the TTC page"></div>
+        <figcaption>Scan to open on your phone</figcaption>
       </figure>
     </div>`;
     if (!T.drawQR(body.querySelector("#suQR"), url, 220)) body.querySelector(".su-qr").hidden = true;
